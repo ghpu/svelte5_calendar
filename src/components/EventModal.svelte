@@ -5,7 +5,7 @@
   import { CATEGORIES, RECURRENCE_TYPES, REMINDER_OPTIONS, EVENT_STATUS, EVENT_PRIORITY } from '../utils/constants.js'
   import { getDateFromDateTime, getTimeFromDateTime, createDateTimeString } from '../utils/dateUtils.js'
 
-  let { event = null, onClose, initialDate = null } = $props()
+  let { event = null, onClose, initialDate = null, initialTime = null } = $props()
 
   const store = calendarStore
   const calendars = calendarsStore
@@ -29,6 +29,15 @@
     attendees: ''
   })
 
+  // Helper function to add hours to a time string
+  function addHoursToTime(timeStr, hours) {
+    const [h, m] = timeStr.split(':').map(Number)
+    const totalMinutes = h * 60 + m + (hours * 60)
+    const newHours = Math.floor(totalMinutes / 60) % 24
+    const newMinutes = totalMinutes % 60
+    return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`
+  }
+
   $effect(() => {
     if (event) {
       formData.title = event.title
@@ -51,11 +60,28 @@
       const dateStr = initialDate.toISOString().split('T')[0]
       formData.startDate = dateStr
       formData.endDate = dateStr
+
+      // Set time if provided, otherwise use current time rounded to next hour
+      if (initialTime) {
+        formData.startTime = initialTime
+        formData.endTime = addHoursToTime(initialTime, 1)
+      } else {
+        const now = new Date()
+        const nextHour = new Date(now)
+        nextHour.setHours(now.getHours() + 1, 0, 0, 0)
+        formData.startTime = `${String(nextHour.getHours()).padStart(2, '0')}:00`
+        formData.endTime = addHoursToTime(formData.startTime, 1)
+      }
     } else {
       const now = new Date()
       const dateStr = now.toISOString().split('T')[0]
       formData.startDate = dateStr
       formData.endDate = dateStr
+      // Round to next hour
+      const nextHour = new Date(now)
+      nextHour.setHours(now.getHours() + 1, 0, 0, 0)
+      formData.startTime = `${String(nextHour.getHours()).padStart(2, '0')}:00`
+      formData.endTime = addHoursToTime(formData.startTime, 1)
     }
   })
 
