@@ -4,7 +4,7 @@
   import { getMonthDays, createDateTimeString, getTimeFromDateTime } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
 
-  let { onEventClick, onDateClick } = $props()
+  let { onEventClick, onDateClick, onContextMenu } = $props()
 
   const store = calendarStore
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -63,26 +63,27 @@
   })
 </script>
 
-<div class="flex flex-col h-full bg-white">
+<div class="flex flex-col h-full bg-white dark:bg-gray-800">
   <!-- Week day headers -->
-  <div class="grid grid-cols-7 border-b border-gray-200">
+  <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
     {#each weekDays as day}
-      <div class="py-3 text-center text-sm font-semibold text-gray-700 border-r border-gray-200 last:border-r-0">
+      <div class="py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 last:border-r-0">
         {day}
       </div>
     {/each}
   </div>
 
   <!-- Calendar grid -->
-  <div class="grid grid-cols-7 flex-1 border-l border-gray-200">
+  <div class="grid grid-cols-7 flex-1 border-l border-gray-200 dark:border-gray-700">
     {#each getMonthDays(store.currentDate) as day}
       {@const dayEvents = store.getEventsForDate(day)}
       {@const isCurrentMonth = isSameMonth(day, store.currentDate)}
       {@const isTodayDate = isToday(day)}
 
       <div
-        class="min-h-[120px] border-r border-b border-gray-200 p-2 cursor-pointer hover:bg-gray-50 transition-colors {!isCurrentMonth ? 'bg-gray-50/50' : ''} {dragOverDate && isSameMonth(dragOverDate, day) && format(dragOverDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ? 'bg-blue-100' : ''}"
+        class="min-h-[120px] border-r border-b border-gray-200 dark:border-gray-700 p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors {!isCurrentMonth ? 'bg-gray-50/50 dark:bg-gray-900/50' : ''} {dragOverDate && isSameMonth(dragOverDate, day) && format(dragOverDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ? 'bg-blue-100 dark:bg-blue-900/30' : ''}"
         onclick={() => onDateClick(day)}
+        oncontextmenu={(e) => onContextMenu(e, null)}
         ondragover={handleDragOver}
         ondragenter={() => handleDragEnter(day)}
         ondragleave={handleDragLeave}
@@ -94,8 +95,8 @@
               isTodayDate
                 ? 'flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white'
                 : !isCurrentMonth
-                ? 'text-gray-400'
-                : 'text-gray-900'
+                ? 'text-gray-400 dark:text-gray-600'
+                : 'text-gray-900 dark:text-gray-100'
             }`}
           >
             {format(day, 'd')}
@@ -112,6 +113,10 @@
                 e.stopPropagation()
                 onEventClick(event)
               }}
+              oncontextmenu={(e) => {
+                e.stopPropagation()
+                onContextMenu(e, event)
+              }}
               class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-move"
               style={`background-color: ${color}20; color: ${color}; border-left: 3px solid ${color}`}
               title={event.title}
@@ -121,7 +126,7 @@
           {/each}
 
           {#if dayEvents.length > 3}
-            <div class="text-xs text-gray-500 px-2">
+            <div class="text-xs text-gray-500 dark:text-gray-400 px-2">
               +{dayEvents.length - 3} more
             </div>
           {/if}

@@ -99,6 +99,31 @@ class CalendarStore {
     this.saveToStorage()
   }
 
+  duplicateEvent(event) {
+    const duplicated = {
+      ...event,
+      id: crypto.randomUUID(),
+      title: `${event.title} (Copy)`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    this.events.push(duplicated)
+    this.saveToStorage()
+    return duplicated
+  }
+
+  changeEventCategory(id, categoryId) {
+    this.updateEvent(id, { category: categoryId })
+  }
+
+  changeEventStatus(id, status) {
+    this.updateEvent(id, { status })
+  }
+
+  changeEventPriority(id, priority) {
+    this.updateEvent(id, { priority })
+  }
+
   getEventsForDate(date) {
     return this.events.filter(event => {
       if (event.recurrence) {

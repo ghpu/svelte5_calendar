@@ -7,20 +7,42 @@
   import DayView from './components/DayView.svelte'
   import EventModal from './components/EventModal.svelte'
   import Sidebar from './components/Sidebar.svelte'
+  import SettingsPanel from './components/SettingsPanel.svelte'
+  import ContextMenu from './components/ContextMenu.svelte'
   import { KEYBOARD_SHORTCUTS } from './utils/constants.js'
 
   const store = calendarStore
 
   let selectedDateForNewEvent = $state(null)
+  let selectedTimeForNewEvent = $state(null)
+  let showSettings = $state(false)
+
+  // Context menu state
+  let contextMenu = $state({
+    visible: false,
+    x: 0,
+    y: 0,
+    event: null
+  })
 
   function handleNewEvent() {
     selectedDateForNewEvent = null
+    selectedTimeForNewEvent = null
     store.openEventModal()
   }
 
-  function handleDateClick(date) {
+  function handleDateClick(date, time = null) {
     selectedDateForNewEvent = date
+    selectedTimeForNewEvent = time
     store.openEventModal()
+  }
+
+  function handleOpenSettings() {
+    showSettings = true
+  }
+
+  function handleCloseSettings() {
+    showSettings = false
   }
 
   function handleEventClick(event) {
@@ -30,6 +52,44 @@
   function handleCloseModal() {
     store.closeEventModal()
     selectedDateForNewEvent = null
+    selectedTimeForNewEvent = null
+  }
+
+  // Context menu handlers
+  function handleContextMenu(e, event = null) {
+    e.preventDefault()
+    contextMenu = {
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      event
+    }
+  }
+
+  function handleContextMenuEdit(event) {
+    store.openEventModal(event)
+  }
+
+  function handleContextMenuDuplicate(event) {
+    store.duplicateEvent(event)
+  }
+
+  function handleContextMenuDelete(event) {
+    if (confirm('Are you sure you want to delete this event?')) {
+      store.deleteEvent(event.id)
+    }
+  }
+
+  function handleContextMenuChangeCategory(event, categoryId) {
+    store.changeEventCategory(event.id, categoryId)
+  }
+
+  function handleContextMenuChangeStatus(event, status) {
+    store.changeEventStatus(event.id, status)
+  }
+
+  function handleContextMenuChangePriority(event, priority) {
+    store.changeEventPriority(event.id, priority)
   }
 
   function handleImport(icalContent) {
@@ -76,6 +136,10 @@
       case 'closeModal':
         if (store.showEventModal) {
           handleCloseModal()
+        } else if (showSettings) {
+          handleCloseSettings()
+        } else if (contextMenu.visible) {
+          contextMenu.visible = false
         }
         break
     }
@@ -135,19 +199,31 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<div class="flex h-screen overflow-hidden bg-gray-100">
+<div class="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900">
   <Sidebar onImport={handleImport} />
 
   <div class="flex-1 flex flex-col overflow-hidden">
-    <CalendarHeader onNewEvent={handleNewEvent} />
+    <CalendarHeader onNewEvent={handleNewEvent} onOpenSettings={handleOpenSettings} />
 
     <main class="flex-1 overflow-hidden">
       {#if store.view === 'month'}
-        <MonthView onEventClick={handleEventClick} onDateClick={handleDateClick} />
+        <MonthView
+          onEventClick={handleEventClick}
+          onDateClick={handleDateClick}
+          onContextMenu={handleContextMenu}
+        />
       {:else if store.view === 'week'}
-        <WeekView onEventClick={handleEventClick} />
+        <WeekView
+          onEventClick={handleEventClick}
+          onTimeSlotClick={handleDateClick}
+          onContextMenu={handleContextMenu}
+        />
       {:else if store.view === 'day'}
-        <DayView onEventClick={handleEventClick} />
+        <DayView
+          onEventClick={handleEventClick}
+          onTimeSlotClick={handleDateClick}
+          onContextMenu={handleContextMenu}
+        />
       {/if}
     </main>
   </div>
@@ -157,6 +233,25 @@
   <EventModal
     event={store.selectedEvent}
     initialDate={selectedDateForNewEvent}
+    initialTime={selectedTimeForNewEvent}
     onClose={handleCloseModal}
   />
 {/if}
+
+{#if showSettings}
+  <SettingsPanel onClose={handleCloseSettings} />
+{/if}
+
+<ContextMenu
+  bind:visible={contextMenu.visible}
+  bind:x={contextMenu.x}
+  bind:y={contextMenu.y}
+  event={contextMenu.event}
+  onNewEvent={handleNewEvent}
+  onEdit={handleContextMenuEdit}
+  onDuplicate={handleContextMenuDuplicate}
+  onDelete={handleContextMenuDelete}
+  onChangeCategory={handleContextMenuChangeCategory}
+  onChangeStatus={handleContextMenuChangeStatus}
+  onChangePriority={handleContextMenuChangePriority}
+/>
