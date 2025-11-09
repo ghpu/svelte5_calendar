@@ -18,6 +18,9 @@
   const store = calendarStore
   const settings = settingsStore
 
+  // Initialize i18n immediately (before component renders)
+  initI18n(settings.language)
+
   let selectedDateForNewEvent = $state(null)
   let selectedTimeForNewEvent = $state(null)
   let showSettings = $state(false)
@@ -255,9 +258,6 @@
   }
 
   onMount(() => {
-    // Initialize i18n with saved language preference
-    initI18n(settings.language)
-
     // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission()
