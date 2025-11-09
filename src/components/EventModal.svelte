@@ -38,6 +38,14 @@
     return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`
   }
 
+  // Helper function to convert Date to YYYY-MM-DD in local timezone
+  function formatDateLocal(date) {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
   $effect(() => {
     if (event) {
       formData.title = event.title
@@ -57,7 +65,7 @@
       formData.reminder = event.reminder || 'none'
       formData.attendees = event.attendees?.join(', ') || ''
     } else if (initialDate) {
-      const dateStr = initialDate.toISOString().split('T')[0]
+      const dateStr = formatDateLocal(initialDate)
       formData.startDate = dateStr
       formData.endDate = dateStr
 
@@ -74,7 +82,7 @@
       }
     } else {
       const now = new Date()
-      const dateStr = now.toISOString().split('T')[0]
+      const dateStr = formatDateLocal(now)
       formData.startDate = dateStr
       formData.endDate = dateStr
       // Round to next hour
