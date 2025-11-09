@@ -1,4 +1,6 @@
 <script>
+  import { _ } from 'svelte-i18n'
+
   let { isOpen = false, onClose, onEditOccurrence, onEditSeries, action = 'edit' } = $props()
 
   function handleEditOccurrence() {
@@ -20,11 +22,11 @@
     >
       <div class="p-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-          {action === 'edit' ? 'Edit Recurring Event' : 'Delete Recurring Event'}
+          {$_('recurrence.editRecurring')}
         </h3>
 
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-          This is a recurring event. What would you like to {action}?
+          {$_('recurrence.editRecurring')}
         </p>
 
         <div class="space-y-3">
@@ -33,10 +35,10 @@
             class="w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors"
           >
             <div class="font-medium text-gray-900 dark:text-gray-100">
-              {action === 'edit' ? 'This occurrence only' : 'Only this occurrence'}
+              {$_('recurrence.thisEvent')}
             </div>
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {action === 'edit' ? 'Edit only this event instance' : 'Delete only this event instance'}
+              {$_('recurrence.thisEvent')}
             </div>
           </button>
 
@@ -45,10 +47,10 @@
             class="w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors"
           >
             <div class="font-medium text-gray-900 dark:text-gray-100">
-              {action === 'edit' ? 'All events in series' : 'All events in the series'}
+              {$_('recurrence.allEvents')}
             </div>
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {action === 'edit' ? 'Edit all recurring instances' : 'Delete all recurring instances'}
+              {$_('recurrence.allEvents')}
             </div>
           </button>
         </div>
@@ -58,7 +60,7 @@
             onclick={onClose}
             class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
-            Cancel
+            {$_('common.cancel')}
           </button>
         </div>
       </div>

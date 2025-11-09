@@ -1,4 +1,5 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
 
   let { isOpen = false, onClose } = $props()
@@ -81,7 +82,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Manage Calendars
+          {$_('calendars.manage')}
         </h2>
         <button
           type="button"
@@ -99,22 +100,22 @@
         <!-- Add/Edit Form -->
         <form onsubmit={editingCalendar ? handleUpdateCalendar : handleAddCalendar} class="space-y-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {editingCalendar ? 'Edit Calendar' : 'Add New Calendar'}
+            {editingCalendar ? $_('calendars.editCalendar') : $_('calendars.createNew')}
           </h3>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Calendar Name *</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('calendars.name')}</label>
             <input
               type="text"
               bind:value={formData.name}
               required
-              placeholder="Enter calendar name"
+              placeholder={$_('calendars.name')}
               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('calendars.color')}</label>
             <div class="grid grid-cols-5 gap-2">
               {#each colorOptions as colorOption}
                 <button
@@ -141,20 +142,20 @@
                 onclick={handleCancelEdit}
                 class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
               >
-                Cancel
+                {$_('common.cancel')}
               </button>
               <button
                 type="submit"
                 class="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Update Calendar
+                {$_('common.save')}
               </button>
             {:else}
               <button
                 type="submit"
                 class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Add Calendar
+                {$_('calendars.createNew')}
               </button>
             {/if}
           </div>
@@ -162,21 +163,21 @@
 
         <!-- Calendar List -->
         <div class="space-y-2">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Your Calendars</h3>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">{$_('sidebar.calendars')}</h3>
           {#each calendars.calendars as calendar}
             <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
               <div class="w-4 h-4 rounded-full" style={`background-color: ${calendar.color}`}></div>
               <div class="flex-1">
                 <div class="font-medium text-gray-900 dark:text-gray-100">{calendar.name}</div>
                 {#if calendar.isDefault}
-                  <div class="text-xs text-gray-500 dark:text-gray-400">Default calendar</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{$_('calendars.name')}</div>
                 {/if}
               </div>
               <div class="flex gap-2">
                 <button
                   onclick={() => handleEditCalendar(calendar)}
                   class="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  title="Edit calendar"
+                  title={$_('common.edit')}
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -186,7 +187,7 @@
                   <button
                     onclick={() => handleDeleteCalendar(calendar)}
                     class="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    title="Delete calendar"
+                    title={$_('common.delete')}
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -206,7 +207,7 @@
           onclick={onClose}
           class="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Done
+          {$_('common.close')}
         </button>
       </div>
     </div>
