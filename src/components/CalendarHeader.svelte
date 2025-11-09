@@ -1,5 +1,6 @@
 <script>
   import { format } from 'date-fns'
+  import { _ } from 'svelte-i18n'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
 
@@ -40,6 +41,19 @@
         return ''
     }
   }
+
+  function getThemeLabel() {
+    switch (settings.theme) {
+      case 'light':
+        return $_('settings.light')
+      case 'dark':
+        return $_('settings.dark')
+      case 'high-contrast':
+        return $_('settings.highContrast')
+      default:
+        return ''
+    }
+  }
 </script>
 
 <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
@@ -51,14 +65,14 @@
         onclick={() => store.goToToday()}
         class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
       >
-        Today
+        {$_('common.today')}
       </button>
 
       <div class="flex items-center gap-2">
         <button
           onclick={() => store.prevPeriod()}
           class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          title="Previous"
+          title={$_('navigation.previous')}
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -68,7 +82,7 @@
         <button
           onclick={() => store.nextPeriod()}
           class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          title="Next"
+          title={$_('navigation.next')}
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -86,7 +100,7 @@
       <button
         onclick={cycleTheme}
         class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-        title={`Theme: ${settings.theme} (click to change)`}
+        title={`${$_('settings.theme')}: ${getThemeLabel()}`}
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={getThemeIcon()} />
@@ -97,7 +111,7 @@
       <button
         onclick={onOpenSettings}
         class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-        title="Settings"
+        title={$_('settings.title')}
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -116,7 +130,7 @@
               : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Month
+          {$_('views.month')}
         </button>
         <button
           onclick={() => store.setView('week')}
@@ -126,7 +140,7 @@
               : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Week
+          {$_('views.week')}
         </button>
         <button
           onclick={() => store.setView('day')}
@@ -136,7 +150,7 @@
               : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
-          Day
+          {$_('views.day')}
         </button>
       </div>
 
@@ -147,7 +161,7 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        New Event
+        {$_('event.createNew')}
       </button>
     </div>
   </div>

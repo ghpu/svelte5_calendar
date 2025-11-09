@@ -1,4 +1,5 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { CATEGORIES, RECURRENCE_TYPES, REMINDER_OPTIONS, EVENT_STATUS, EVENT_PRIORITY } from '../utils/constants.js'
@@ -100,7 +101,7 @@
   }
 
   function handleDelete() {
-    if (event && confirm('Are you sure you want to delete this event?')) {
+    if (event && confirm($_('calendars.confirmDelete'))) {
       store.deleteEvent(event.id)
       onClose()
     }
@@ -119,7 +120,7 @@
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          {event ? 'Edit Event' : 'Create New Event'}
+          {event ? $_('event.editEvent') : $_('event.createNew')}
         </h2>
         <button
           type="button"
@@ -136,20 +137,20 @@
       <div class="p-6 space-y-4">
         <!-- Title -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Title *</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.titleRequired')}</label>
           <input
             type="text"
             bind:value={formData.title}
             required
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Event title"
+            placeholder={$_('event.title')}
           />
         </div>
 
         <!-- Date and time -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date *</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.startDateRequired')}</label>
             <input
               type="date"
               bind:value={formData.startDate}
@@ -158,7 +159,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Time *</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.startTimeRequired')}</label>
             <input
               type="time"
               bind:value={formData.startTime}
@@ -167,7 +168,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date *</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.endDateRequired')}</label>
             <input
               type="date"
               bind:value={formData.endDate}
@@ -176,7 +177,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Time *</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.endTimeRequired')}</label>
             <input
               type="time"
               bind:value={formData.endTime}
@@ -188,29 +189,29 @@
 
         <!-- Description -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.description')}</label>
           <textarea
             bind:value={formData.description}
             rows="3"
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
-            placeholder="Add event description"
+            placeholder={$_('event.description')}
           ></textarea>
         </div>
 
         <!-- Location -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.location')}</label>
           <input
             type="text"
             bind:value={formData.location}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Add location"
+            placeholder={$_('event.location')}
           />
         </div>
 
         <!-- Calendar -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Calendar</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.calendar')}</label>
           <select
             bind:value={formData.calendarId}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -223,7 +224,7 @@
 
         <!-- Category -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.category')}</label>
           {#each [formData.category] as currentCategoryId}
             {@const selectedCategory = CATEGORIES.find(c => c.id === currentCategoryId)}
             <div class="flex gap-2">
@@ -239,7 +240,7 @@
                 class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {#each CATEGORIES as category}
-                  <option value={category.id}>{category.name}</option>
+                  <option value={category.id}>{$_(`categories.${category.id}`)}</option>
                 {/each}
               </select>
             </div>
@@ -248,14 +249,14 @@
 
         <!-- Status -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.status')}</label>
           <select
             bind:value={formData.status}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {#each EVENT_STATUS as status}
               <option value={status.id}>
-                {status.icon} {status.name}
+                {status.icon} {$_(`statuses.${status.id}`)}
               </option>
             {/each}
           </select>
@@ -263,14 +264,14 @@
 
         <!-- Priority -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Priority</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.priority')}</label>
           <select
             bind:value={formData.priority}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {#each EVENT_PRIORITY as priority}
               <option value={priority.id}>
-                {priority.icon} {priority.name}
+                {priority.icon} {$_(`priorities.${priority.id}`)}
               </option>
             {/each}
           </select>
@@ -285,26 +286,26 @@
             class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
           />
           <label for="isAllDay" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            All-day event
+            {$_('event.allDayEvent')}
           </label>
         </div>
 
         <!-- Recurrence -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recurrence</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.recurrence')}</label>
           <select
             bind:value={formData.recurrenceType}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {#each RECURRENCE_TYPES as type}
-              <option value={type.id}>{type.name}</option>
+              <option value={type.id}>{$_(`recurrence.${type.id}`)}</option>
             {/each}
           </select>
         </div>
 
         {#if formData.recurrenceType !== 'none'}
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Recurrence End Date (Optional)</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.recurrenceEndDate')}</label>
             <input
               type="date"
               bind:value={formData.recurrenceEndDate}
@@ -315,25 +316,25 @@
 
         <!-- Reminder -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Reminder</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.reminder')}</label>
           <select
             bind:value={formData.reminder}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {#each REMINDER_OPTIONS as option}
-              <option value={option.id}>{option.name}</option>
+              <option value={option.id}>{$_(`reminders.${option.id}`)}</option>
             {/each}
           </select>
         </div>
 
         <!-- Attendees -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Attendees (comma-separated emails)</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{$_('event.attendees')}</label>
           <input
             type="text"
             bind:value={formData.attendees}
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="john@example.com, jane@example.com"
+            placeholder={$_('event.attendees')}
           />
         </div>
       </div>
@@ -347,7 +348,7 @@
               onclick={handleDelete}
               class="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
             >
-              Delete Event
+              {$_('contextMenu.deleteEvent')}
             </button>
           {/if}
         </div>
@@ -357,13 +358,13 @@
             onclick={onClose}
             class="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
-            Cancel
+            {$_('common.cancel')}
           </button>
           <button
             type="submit"
             class="px-6 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
           >
-            {event ? 'Update Event' : 'Create Event'}
+            {event ? $_('common.save') : $_('common.create')}
           </button>
         </div>
       </div>
