@@ -159,8 +159,6 @@
         {@const position = getEventPosition(event)}
         {@const isRecurring = isRecurringEvent(event)}
         {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
-        {@const eventWidth = event.widthPercent}
-        {@const eventLeft = 84 + (event.leftPercent * 0.01 * (100 - 84))}
         <button
           onclick={(e) => {
             e.stopPropagation()
@@ -175,8 +173,8 @@
             background-color: ${color}20;
             color: ${color};
             border-left: 4px solid ${color};
-            left: calc(${eventLeft}px);
-            width: calc(${eventWidth}% * (100vw - 84px) / 100 - 8px);
+            left: calc(80px + ${event.leftPercent}% * (100% - 80px) / 100);
+            width: calc(${event.widthPercent}% * (100% - 80px) / 100 - 8px);
             top: ${position.top};
             min-height: ${position.height};
           `}

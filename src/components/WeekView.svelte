@@ -191,10 +191,6 @@
           {@const position = getEventPosition(event)}
           {@const isRecurring = isRecurringEvent(event)}
           {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
-          {@const dayColumnWidth = (100 - 60) / 7}
-          {@const dayColumnStart = 60 + (dayIndex * dayColumnWidth)}
-          {@const eventWidth = (dayColumnWidth * event.widthPercent / 100) - 0.5}
-          {@const eventLeft = dayColumnStart + (dayColumnWidth * event.leftPercent / 100) + 0.25}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -209,8 +205,8 @@
               background-color: ${color}20;
               color: ${color};
               border-left: 3px solid ${color};
-              left: calc(${eventLeft}px);
-              width: calc(${eventWidth}%);
+              left: calc(60px + ${dayIndex} * ((100% - 60px) / 7) + ${event.leftPercent}% * ((100% - 60px) / 7) / 100);
+              width: calc(${event.widthPercent}% * ((100% - 60px) / 7) / 100 - 4px);
               top: ${position.top};
               min-height: ${position.height};
             `}
