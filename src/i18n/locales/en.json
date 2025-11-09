@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "create": "Create",
+    "search": "Search",
+    "today": "Today",
+    "allDay": "All Day",
+    "more": "more"
+  },
+  "views": {
+    "month": "Month",
+    "week": "Week",
+    "day": "Day"
+  },
+  "navigation": {
+    "previous": "Previous",
+    "next": "Next",
+    "goToToday": "Go to Today"
+  },
+  "sidebar": {
+    "miniCalendar": "Mini Calendar",
+    "calendars": "Calendars",
+    "categories": "Categories",
+    "allCategories": "All Categories"
+  },
+  "event": {
+    "createNew": "Create New Event",
+    "editEvent": "Edit Event",
+    "title": "Title",
+    "titleRequired": "Title *",
+    "description": "Description",
+    "location": "Location",
+    "startDate": "Start Date",
+    "startDateRequired": "Start Date *",
+    "startTime": "Start Time",
+    "startTimeRequired": "Start Time *",
+    "endDate": "End Date",
+    "endDateRequired": "End Date *",
+    "endTime": "End Time",
+    "endTimeRequired": "End Time *",
+    "calendar": "Calendar",
+    "category": "Category",
+    "status": "Status",
+    "priority": "Priority",
+    "recurrence": "Recurrence",
+    "recurrenceEndDate": "Recurrence End Date (Optional)",
+    "reminder": "Reminder",
+    "attendees": "Attendees (comma-separated emails)",
+    "allDayEvent": "All-day event"
+  },
+  "categories": {
+    "work": "Work",
+    "personal": "Personal",
+    "meeting": "Meeting",
+    "appointment": "Appointment",
+    "vacation": "Vacation",
+    "birthday": "Birthday",
+    "other": "Other"
+  },
+  "statuses": {
+    "confirmed": "Confirmed",
+    "tentative": "Tentative",
+    "cancelled": "Cancelled"
+  },
+  "priorities": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "recurrence": {
+    "none": "Does not repeat",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "editRecurring": "Edit Recurring Event",
+    "thisEvent": "This event only",
+    "thisAndFuture": "This and future events",
+    "allEvents": "All events"
+  },
+  "reminders": {
+    "none": "None",
+    "atTime": "At time of event",
+    "5min": "5 minutes before",
+    "15min": "15 minutes before",
+    "30min": "30 minutes before",
+    "1hour": "1 hour before",
+    "1day": "1 day before",
+    "1week": "1 week before"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "language": "Language",
+    "firstDayOfWeek": "First Day of Week",
+    "dateFormat": "Date Format",
+    "timeFormat": "Time Format",
+    "showWeekNumbers": "Show Week Numbers",
+    "defaultView": "Default View",
+    "hourRange": "Hour Range for Day/Week View",
+    "startHour": "Start Hour",
+    "endHour": "End Hour",
+    "workingHours": "Working Hours",
+    "start": "Start",
+    "end": "End",
+    "highlightWorkingHours": "Highlight Working Hours",
+    "highlightWeekends": "Highlight Weekends",
+    "compactMode": "Compact Mode",
+    "eventPreviewOnHover": "Show Event Preview on Hover",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "highContrast": "High Contrast",
+    "defaultReminder": "Default Reminder",
+    "soundNotifications": "Sound Notifications",
+    "desktopNotifications": "Desktop Notifications"
+  },
+  "calendars": {
+    "manage": "Manage Calendars",
+    "createNew": "Create New Calendar",
+    "editCalendar": "Edit Calendar",
+    "name": "Name",
+    "color": "Color",
+    "visible": "Visible",
+    "deleteCalendar": "Delete Calendar",
+    "confirmDelete": "Are you sure you want to delete this calendar? All events in this calendar will also be deleted."
+  },
+  "contextMenu": {
+    "editEvent": "Edit Event",
+    "deleteEvent": "Delete Event",
+    "duplicateEvent": "Duplicate Event",
+    "changeCalendar": "Change Calendar",
+    "changeCategory": "Change Category"
+  },
+  "weekDays": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/DD/YYYY",
+    "ddmmyyyy": "DD/MM/YYYY",
+    "yyyymmdd": "YYYY-MM-DD"
+  },
+  "timeFormats": {
+    "12h": "12-hour",
+    "24h": "24-hour"
+  }
+}

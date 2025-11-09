@@ -1,6 +1,9 @@
 <script>
   import { onMount } from 'svelte'
+  import { locale } from 'svelte-i18n'
+  import { initI18n } from './i18n/i18n.js'
   import { calendarStore } from './stores/calendarStore.svelte.js'
+  import { settingsStore } from './stores/settingsStore.svelte.js'
   import CalendarHeader from './components/CalendarHeader.svelte'
   import MonthView from './components/MonthView.svelte'
   import WeekView from './components/WeekView.svelte'
@@ -13,6 +16,7 @@
   import { KEYBOARD_SHORTCUTS } from './utils/constants.js'
 
   const store = calendarStore
+  const settings = settingsStore
 
   let selectedDateForNewEvent = $state(null)
   let selectedTimeForNewEvent = $state(null)
@@ -251,6 +255,9 @@
   }
 
   onMount(() => {
+    // Initialize i18n with saved language preference
+    initI18n(settings.language)
+
     // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission()
@@ -261,6 +268,13 @@
 
     return () => {
       clearInterval(reminderInterval)
+    }
+  })
+
+  // Watch for language changes in settings
+  $effect(() => {
+    if (settings.language) {
+      locale.set(settings.language)
     }
   })
 </script>

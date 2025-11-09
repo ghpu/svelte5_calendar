@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "create": "Crear",
+    "search": "Buscar",
+    "today": "Hoy",
+    "allDay": "Todo el día",
+    "more": "más"
+  },
+  "views": {
+    "month": "Mes",
+    "week": "Semana",
+    "day": "Día"
+  },
+  "navigation": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "goToToday": "Ir a hoy"
+  },
+  "sidebar": {
+    "miniCalendar": "Mini Calendario",
+    "calendars": "Calendarios",
+    "categories": "Categorías",
+    "allCategories": "Todas las categorías"
+  },
+  "event": {
+    "createNew": "Crear nuevo evento",
+    "editEvent": "Editar evento",
+    "title": "Título",
+    "titleRequired": "Título *",
+    "description": "Descripción",
+    "location": "Ubicación",
+    "startDate": "Fecha de inicio",
+    "startDateRequired": "Fecha de inicio *",
+    "startTime": "Hora de inicio",
+    "startTimeRequired": "Hora de inicio *",
+    "endDate": "Fecha de finalización",
+    "endDateRequired": "Fecha de finalización *",
+    "endTime": "Hora de finalización",
+    "endTimeRequired": "Hora de finalización *",
+    "calendar": "Calendario",
+    "category": "Categoría",
+    "status": "Estado",
+    "priority": "Prioridad",
+    "recurrence": "Repetición",
+    "recurrenceEndDate": "Fecha de fin de repetición (Opcional)",
+    "reminder": "Recordatorio",
+    "attendees": "Asistentes (correos separados por comas)",
+    "allDayEvent": "Evento de todo el día"
+  },
+  "categories": {
+    "work": "Trabajo",
+    "personal": "Personal",
+    "meeting": "Reunión",
+    "appointment": "Cita",
+    "vacation": "Vacaciones",
+    "birthday": "Cumpleaños",
+    "other": "Otro"
+  },
+  "statuses": {
+    "confirmed": "Confirmado",
+    "tentative": "Tentativo",
+    "cancelled": "Cancelado"
+  },
+  "priorities": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta"
+  },
+  "recurrence": {
+    "none": "No se repite",
+    "daily": "Diariamente",
+    "weekly": "Semanalmente",
+    "monthly": "Mensualmente",
+    "yearly": "Anualmente",
+    "editRecurring": "Editar evento recurrente",
+    "thisEvent": "Solo este evento",
+    "thisAndFuture": "Este evento y futuros",
+    "allEvents": "Todos los eventos"
+  },
+  "reminders": {
+    "none": "Ninguno",
+    "atTime": "A la hora del evento",
+    "5min": "5 minutos antes",
+    "15min": "15 minutos antes",
+    "30min": "30 minutos antes",
+    "1hour": "1 hora antes",
+    "1day": "1 día antes",
+    "1week": "1 semana antes"
+  },
+  "settings": {
+    "title": "Configuración",
+    "general": "General",
+    "appearance": "Apariencia",
+    "notifications": "Notificaciones",
+    "language": "Idioma",
+    "firstDayOfWeek": "Primer día de la semana",
+    "dateFormat": "Formato de fecha",
+    "timeFormat": "Formato de hora",
+    "showWeekNumbers": "Mostrar números de semana",
+    "defaultView": "Vista predeterminada",
+    "hourRange": "Rango de horas para vista Día/Semana",
+    "startHour": "Hora de inicio",
+    "endHour": "Hora de fin",
+    "workingHours": "Horas de trabajo",
+    "start": "Inicio",
+    "end": "Fin",
+    "highlightWorkingHours": "Resaltar horas de trabajo",
+    "highlightWeekends": "Resaltar fines de semana",
+    "compactMode": "Modo compacto",
+    "eventPreviewOnHover": "Mostrar vista previa al pasar el cursor",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "highContrast": "Alto contraste",
+    "defaultReminder": "Recordatorio predeterminado",
+    "soundNotifications": "Notificaciones de sonido",
+    "desktopNotifications": "Notificaciones de escritorio"
+  },
+  "calendars": {
+    "manage": "Administrar calendarios",
+    "createNew": "Crear nuevo calendario",
+    "editCalendar": "Editar calendario",
+    "name": "Nombre",
+    "color": "Color",
+    "visible": "Visible",
+    "deleteCalendar": "Eliminar calendario",
+    "confirmDelete": "¿Está seguro de que desea eliminar este calendario? Todos los eventos de este calendario también se eliminarán."
+  },
+  "contextMenu": {
+    "editEvent": "Editar evento",
+    "deleteEvent": "Eliminar evento",
+    "duplicateEvent": "Duplicar evento",
+    "changeCalendar": "Cambiar calendario",
+    "changeCategory": "Cambiar categoría"
+  },
+  "weekDays": {
+    "sunday": "Domingo",
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miércoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sábado",
+    "sun": "Dom",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mié",
+    "thu": "Jue",
+    "fri": "Vie",
+    "sat": "Sáb"
+  },
+  "months": {
+    "january": "Enero",
+    "february": "Febrero",
+    "march": "Marzo",
+    "april": "Abril",
+    "may": "Mayo",
+    "june": "Junio",
+    "july": "Julio",
+    "august": "Agosto",
+    "september": "Septiembre",
+    "october": "Octubre",
+    "november": "Noviembre",
+    "december": "Diciembre"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/DD/AAAA",
+    "ddmmyyyy": "DD/MM/AAAA",
+    "yyyymmdd": "AAAA-MM-DD"
+  },
+  "timeFormats": {
+    "12h": "12 horas",
+    "24h": "24 horas"
+  }
+}

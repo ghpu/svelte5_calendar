@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "close": "Закрыть",
+    "create": "Создать",
+    "search": "Поиск",
+    "today": "Сегодня",
+    "allDay": "Весь день",
+    "more": "еще"
+  },
+  "views": {
+    "month": "Месяц",
+    "week": "Неделя",
+    "day": "День"
+  },
+  "navigation": {
+    "previous": "Назад",
+    "next": "Вперед",
+    "goToToday": "Перейти к сегодня"
+  },
+  "sidebar": {
+    "miniCalendar": "Мини-календарь",
+    "calendars": "Календари",
+    "categories": "Категории",
+    "allCategories": "Все категории"
+  },
+  "event": {
+    "createNew": "Создать новое событие",
+    "editEvent": "Редактировать событие",
+    "title": "Заголовок",
+    "titleRequired": "Заголовок *",
+    "description": "Описание",
+    "location": "Место",
+    "startDate": "Дата начала",
+    "startDateRequired": "Дата начала *",
+    "startTime": "Время начала",
+    "startTimeRequired": "Время начала *",
+    "endDate": "Дата окончания",
+    "endDateRequired": "Дата окончания *",
+    "endTime": "Время окончания",
+    "endTimeRequired": "Время окончания *",
+    "calendar": "Календарь",
+    "category": "Категория",
+    "status": "Статус",
+    "priority": "Приоритет",
+    "recurrence": "Повтор",
+    "recurrenceEndDate": "Дата окончания повтора (необязательно)",
+    "reminder": "Напоминание",
+    "attendees": "Участники (адреса через запятую)",
+    "allDayEvent": "Событие на весь день"
+  },
+  "categories": {
+    "work": "Работа",
+    "personal": "Личное",
+    "meeting": "Встреча",
+    "appointment": "Назначение",
+    "vacation": "Отпуск",
+    "birthday": "День рождения",
+    "other": "Другое"
+  },
+  "statuses": {
+    "confirmed": "Подтверждено",
+    "tentative": "Предварительно",
+    "cancelled": "Отменено"
+  },
+  "priorities": {
+    "low": "Низкий",
+    "medium": "Средний",
+    "high": "Высокий"
+  },
+  "recurrence": {
+    "none": "Не повторяется",
+    "daily": "Ежедневно",
+    "weekly": "Еженедельно",
+    "monthly": "Ежемесячно",
+    "yearly": "Ежегодно",
+    "editRecurring": "Редактировать повторяющееся событие",
+    "thisEvent": "Только это событие",
+    "thisAndFuture": "Это и будущие события",
+    "allEvents": "Все события"
+  },
+  "reminders": {
+    "none": "Нет",
+    "atTime": "В время события",
+    "5min": "За 5 минут",
+    "15min": "За 15 минут",
+    "30min": "За 30 минут",
+    "1hour": "За 1 час",
+    "1day": "За 1 день",
+    "1week": "За 1 неделю"
+  },
+  "settings": {
+    "title": "Настройки",
+    "general": "Общие",
+    "appearance": "Внешний вид",
+    "notifications": "Уведомления",
+    "language": "Язык",
+    "firstDayOfWeek": "Первый день недели",
+    "dateFormat": "Формат даты",
+    "timeFormat": "Формат времени",
+    "showWeekNumbers": "Показывать номера недель",
+    "defaultView": "Вид по умолчанию",
+    "hourRange": "Диапазон часов для вида День/Неделя",
+    "startHour": "Начальный час",
+    "endHour": "Конечный час",
+    "workingHours": "Рабочие часы",
+    "start": "Начало",
+    "end": "Конец",
+    "highlightWorkingHours": "Выделить рабочие часы",
+    "highlightWeekends": "Выделить выходные",
+    "compactMode": "Компактный режим",
+    "eventPreviewOnHover": "Показывать предпросмотр при наведении",
+    "theme": "Тема",
+    "light": "Светлая",
+    "dark": "Темная",
+    "highContrast": "Высокая контрастность",
+    "defaultReminder": "Напоминание по умолчанию",
+    "soundNotifications": "Звуковые уведомления",
+    "desktopNotifications": "Уведомления на рабочем столе"
+  },
+  "calendars": {
+    "manage": "Управление календарями",
+    "createNew": "Создать новый календарь",
+    "editCalendar": "Редактировать календарь",
+    "name": "Название",
+    "color": "Цвет",
+    "visible": "Видимый",
+    "deleteCalendar": "Удалить календарь",
+    "confirmDelete": "Вы уверены, что хотите удалить этот календарь? Все события в этом календаре также будут удалены."
+  },
+  "contextMenu": {
+    "editEvent": "Редактировать событие",
+    "deleteEvent": "Удалить событие",
+    "duplicateEvent": "Дублировать событие",
+    "changeCalendar": "Изменить календарь",
+    "changeCategory": "Изменить категорию"
+  },
+  "weekDays": {
+    "sunday": "Воскресенье",
+    "monday": "Понедельник",
+    "tuesday": "Вторник",
+    "wednesday": "Среда",
+    "thursday": "Четверг",
+    "friday": "Пятница",
+    "saturday": "Суббота",
+    "sun": "Вс",
+    "mon": "Пн",
+    "tue": "Вт",
+    "wed": "Ср",
+    "thu": "Чт",
+    "fri": "Пт",
+    "sat": "Сб"
+  },
+  "months": {
+    "january": "Январь",
+    "february": "Февраль",
+    "march": "Март",
+    "april": "Апрель",
+    "may": "Май",
+    "june": "Июнь",
+    "july": "Июль",
+    "august": "Август",
+    "september": "Сентябрь",
+    "october": "Октябрь",
+    "november": "Ноябрь",
+    "december": "Декабрь"
+  },
+  "dateFormats": {
+    "mmddyyyy": "ММ/ДД/ГГГГ",
+    "ddmmyyyy": "ДД/ММ/ГГГГ",
+    "yyyymmdd": "ГГГГ-ММ-ДД"
+  },
+  "timeFormats": {
+    "12h": "12 часов",
+    "24h": "24 часа"
+  }
+}

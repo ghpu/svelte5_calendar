@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "create": "创建",
+    "search": "搜索",
+    "today": "今天",
+    "allDay": "全天",
+    "more": "更多"
+  },
+  "views": {
+    "month": "月",
+    "week": "周",
+    "day": "日"
+  },
+  "navigation": {
+    "previous": "上一个",
+    "next": "下一个",
+    "goToToday": "转到今天"
+  },
+  "sidebar": {
+    "miniCalendar": "迷你日历",
+    "calendars": "日历",
+    "categories": "类别",
+    "allCategories": "所有类别"
+  },
+  "event": {
+    "createNew": "创建新事件",
+    "editEvent": "编辑事件",
+    "title": "标题",
+    "titleRequired": "标题 *",
+    "description": "描述",
+    "location": "位置",
+    "startDate": "开始日期",
+    "startDateRequired": "开始日期 *",
+    "startTime": "开始时间",
+    "startTimeRequired": "开始时间 *",
+    "endDate": "结束日期",
+    "endDateRequired": "结束日期 *",
+    "endTime": "结束时间",
+    "endTimeRequired": "结束时间 *",
+    "calendar": "日历",
+    "category": "类别",
+    "status": "状态",
+    "priority": "优先级",
+    "recurrence": "重复",
+    "recurrenceEndDate": "重复结束日期（可选）",
+    "reminder": "提醒",
+    "attendees": "参与者（用逗号分隔的电子邮件）",
+    "allDayEvent": "全天事件"
+  },
+  "categories": {
+    "work": "工作",
+    "personal": "个人",
+    "meeting": "会议",
+    "appointment": "约会",
+    "vacation": "假期",
+    "birthday": "生日",
+    "other": "其他"
+  },
+  "statuses": {
+    "confirmed": "已确认",
+    "tentative": "待定",
+    "cancelled": "已取消"
+  },
+  "priorities": {
+    "low": "低",
+    "medium": "中",
+    "high": "高"
+  },
+  "recurrence": {
+    "none": "不重复",
+    "daily": "每天",
+    "weekly": "每周",
+    "monthly": "每月",
+    "yearly": "每年",
+    "editRecurring": "编辑重复事件",
+    "thisEvent": "仅此事件",
+    "thisAndFuture": "此事件和未来事件",
+    "allEvents": "所有事件"
+  },
+  "reminders": {
+    "none": "无",
+    "atTime": "事件时间",
+    "5min": "提前5分钟",
+    "15min": "提前15分钟",
+    "30min": "提前30分钟",
+    "1hour": "提前1小时",
+    "1day": "提前1天",
+    "1week": "提前1周"
+  },
+  "settings": {
+    "title": "设置",
+    "general": "常规",
+    "appearance": "外观",
+    "notifications": "通知",
+    "language": "语言",
+    "firstDayOfWeek": "每周的第一天",
+    "dateFormat": "日期格式",
+    "timeFormat": "时间格式",
+    "showWeekNumbers": "显示周数",
+    "defaultView": "默认视图",
+    "hourRange": "日/周视图的小时范围",
+    "startHour": "开始小时",
+    "endHour": "结束小时",
+    "workingHours": "工作时间",
+    "start": "开始",
+    "end": "结束",
+    "highlightWorkingHours": "突出显示工作时间",
+    "highlightWeekends": "突出显示周末",
+    "compactMode": "紧凑模式",
+    "eventPreviewOnHover": "悬停时显示事件预览",
+    "theme": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "highContrast": "高对比度",
+    "defaultReminder": "默认提醒",
+    "soundNotifications": "声音通知",
+    "desktopNotifications": "桌面通知"
+  },
+  "calendars": {
+    "manage": "管理日历",
+    "createNew": "创建新日历",
+    "editCalendar": "编辑日历",
+    "name": "名称",
+    "color": "颜色",
+    "visible": "可见",
+    "deleteCalendar": "删除日历",
+    "confirmDelete": "确定要删除此日历吗？此日历中的所有事件也将被删除。"
+  },
+  "contextMenu": {
+    "editEvent": "编辑事件",
+    "deleteEvent": "删除事件",
+    "duplicateEvent": "复制事件",
+    "changeCalendar": "更改日历",
+    "changeCategory": "更改类别"
+  },
+  "weekDays": {
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六",
+    "sun": "日",
+    "mon": "一",
+    "tue": "二",
+    "wed": "三",
+    "thu": "四",
+    "fri": "五",
+    "sat": "六"
+  },
+  "months": {
+    "january": "一月",
+    "february": "二月",
+    "march": "三月",
+    "april": "四月",
+    "may": "五月",
+    "june": "六月",
+    "july": "七月",
+    "august": "八月",
+    "september": "九月",
+    "october": "十月",
+    "november": "十一月",
+    "december": "十二月"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/DD/YYYY",
+    "ddmmyyyy": "DD/MM/YYYY",
+    "yyyymmdd": "YYYY-MM-DD"
+  },
+  "timeFormats": {
+    "12h": "12小时制",
+    "24h": "24小时制"
+  }
+}

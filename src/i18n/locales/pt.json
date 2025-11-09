@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "close": "Fechar",
+    "create": "Criar",
+    "search": "Pesquisar",
+    "today": "Hoje",
+    "allDay": "Dia inteiro",
+    "more": "mais"
+  },
+  "views": {
+    "month": "Mês",
+    "week": "Semana",
+    "day": "Dia"
+  },
+  "navigation": {
+    "previous": "Anterior",
+    "next": "Próximo",
+    "goToToday": "Ir para hoje"
+  },
+  "sidebar": {
+    "miniCalendar": "Mini calendário",
+    "calendars": "Calendários",
+    "categories": "Categorias",
+    "allCategories": "Todas as categorias"
+  },
+  "event": {
+    "createNew": "Criar novo evento",
+    "editEvent": "Editar evento",
+    "title": "Título",
+    "titleRequired": "Título *",
+    "description": "Descrição",
+    "location": "Local",
+    "startDate": "Data de início",
+    "startDateRequired": "Data de início *",
+    "startTime": "Hora de início",
+    "startTimeRequired": "Hora de início *",
+    "endDate": "Data de término",
+    "endDateRequired": "Data de término *",
+    "endTime": "Hora de término",
+    "endTimeRequired": "Hora de término *",
+    "calendar": "Calendário",
+    "category": "Categoria",
+    "status": "Status",
+    "priority": "Prioridade",
+    "recurrence": "Recorrência",
+    "recurrenceEndDate": "Data de término da recorrência (opcional)",
+    "reminder": "Lembrete",
+    "attendees": "Participantes (emails separados por vírgulas)",
+    "allDayEvent": "Evento de dia inteiro"
+  },
+  "categories": {
+    "work": "Trabalho",
+    "personal": "Pessoal",
+    "meeting": "Reunião",
+    "appointment": "Compromisso",
+    "vacation": "Férias",
+    "birthday": "Aniversário",
+    "other": "Outro"
+  },
+  "statuses": {
+    "confirmed": "Confirmado",
+    "tentative": "Tentativo",
+    "cancelled": "Cancelado"
+  },
+  "priorities": {
+    "low": "Baixa",
+    "medium": "Média",
+    "high": "Alta"
+  },
+  "recurrence": {
+    "none": "Não se repete",
+    "daily": "Diário",
+    "weekly": "Semanal",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "editRecurring": "Editar evento recorrente",
+    "thisEvent": "Apenas este evento",
+    "thisAndFuture": "Este e eventos futuros",
+    "allEvents": "Todos os eventos"
+  },
+  "reminders": {
+    "none": "Nenhum",
+    "atTime": "Na hora do evento",
+    "5min": "5 minutos antes",
+    "15min": "15 minutos antes",
+    "30min": "30 minutos antes",
+    "1hour": "1 hora antes",
+    "1day": "1 dia antes",
+    "1week": "1 semana antes"
+  },
+  "settings": {
+    "title": "Configurações",
+    "general": "Geral",
+    "appearance": "Aparência",
+    "notifications": "Notificações",
+    "language": "Idioma",
+    "firstDayOfWeek": "Primeiro dia da semana",
+    "dateFormat": "Formato de data",
+    "timeFormat": "Formato de hora",
+    "showWeekNumbers": "Mostrar números de semana",
+    "defaultView": "Vista padrão",
+    "hourRange": "Intervalo de horas para vista Dia/Semana",
+    "startHour": "Hora de início",
+    "endHour": "Hora de término",
+    "workingHours": "Horas de trabalho",
+    "start": "Início",
+    "end": "Término",
+    "highlightWorkingHours": "Destacar horas de trabalho",
+    "highlightWeekends": "Destacar fins de semana",
+    "compactMode": "Modo compacto",
+    "eventPreviewOnHover": "Mostrar prévia ao passar o mouse",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "highContrast": "Alto contraste",
+    "defaultReminder": "Lembrete padrão",
+    "soundNotifications": "Notificações sonoras",
+    "desktopNotifications": "Notificações de desktop"
+  },
+  "calendars": {
+    "manage": "Gerenciar calendários",
+    "createNew": "Criar novo calendário",
+    "editCalendar": "Editar calendário",
+    "name": "Nome",
+    "color": "Cor",
+    "visible": "Visível",
+    "deleteCalendar": "Excluir calendário",
+    "confirmDelete": "Tem certeza de que deseja excluir este calendário? Todos os eventos neste calendário também serão excluídos."
+  },
+  "contextMenu": {
+    "editEvent": "Editar evento",
+    "deleteEvent": "Excluir evento",
+    "duplicateEvent": "Duplicar evento",
+    "changeCalendar": "Alterar calendário",
+    "changeCategory": "Alterar categoria"
+  },
+  "weekDays": {
+    "sunday": "Domingo",
+    "monday": "Segunda-feira",
+    "tuesday": "Terça-feira",
+    "wednesday": "Quarta-feira",
+    "thursday": "Quinta-feira",
+    "friday": "Sexta-feira",
+    "saturday": "Sábado",
+    "sun": "Dom",
+    "mon": "Seg",
+    "tue": "Ter",
+    "wed": "Qua",
+    "thu": "Qui",
+    "fri": "Sex",
+    "sat": "Sáb"
+  },
+  "months": {
+    "january": "Janeiro",
+    "february": "Fevereiro",
+    "march": "Março",
+    "april": "Abril",
+    "may": "Maio",
+    "june": "Junho",
+    "july": "Julho",
+    "august": "Agosto",
+    "september": "Setembro",
+    "october": "Outubro",
+    "november": "Novembro",
+    "december": "Dezembro"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/DD/AAAA",
+    "ddmmyyyy": "DD/MM/AAAA",
+    "yyyymmdd": "AAAA-MM-DD"
+  },
+  "timeFormats": {
+    "12h": "12 horas",
+    "24h": "24 horas"
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "create": "Créer",
+    "search": "Rechercher",
+    "today": "Aujourd'hui",
+    "allDay": "Toute la journée",
+    "more": "plus"
+  },
+  "views": {
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour"
+  },
+  "navigation": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "goToToday": "Aller à aujourd'hui"
+  },
+  "sidebar": {
+    "miniCalendar": "Mini calendrier",
+    "calendars": "Calendriers",
+    "categories": "Catégories",
+    "allCategories": "Toutes les catégories"
+  },
+  "event": {
+    "createNew": "Créer un nouvel événement",
+    "editEvent": "Modifier l'événement",
+    "title": "Titre",
+    "titleRequired": "Titre *",
+    "description": "Description",
+    "location": "Emplacement",
+    "startDate": "Date de début",
+    "startDateRequired": "Date de début *",
+    "startTime": "Heure de début",
+    "startTimeRequired": "Heure de début *",
+    "endDate": "Date de fin",
+    "endDateRequired": "Date de fin *",
+    "endTime": "Heure de fin",
+    "endTimeRequired": "Heure de fin *",
+    "calendar": "Calendrier",
+    "category": "Catégorie",
+    "status": "Statut",
+    "priority": "Priorité",
+    "recurrence": "Récurrence",
+    "recurrenceEndDate": "Date de fin de récurrence (facultatif)",
+    "reminder": "Rappel",
+    "attendees": "Participants (emails séparés par des virgules)",
+    "allDayEvent": "Événement d'une journée entière"
+  },
+  "categories": {
+    "work": "Travail",
+    "personal": "Personnel",
+    "meeting": "Réunion",
+    "appointment": "Rendez-vous",
+    "vacation": "Vacances",
+    "birthday": "Anniversaire",
+    "other": "Autre"
+  },
+  "statuses": {
+    "confirmed": "Confirmé",
+    "tentative": "Provisoire",
+    "cancelled": "Annulé"
+  },
+  "priorities": {
+    "low": "Faible",
+    "medium": "Moyenne",
+    "high": "Élevée"
+  },
+  "recurrence": {
+    "none": "Ne se répète pas",
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "editRecurring": "Modifier l'événement récurrent",
+    "thisEvent": "Cet événement uniquement",
+    "thisAndFuture": "Cet événement et les suivants",
+    "allEvents": "Tous les événements"
+  },
+  "reminders": {
+    "none": "Aucun",
+    "atTime": "À l'heure de l'événement",
+    "5min": "5 minutes avant",
+    "15min": "15 minutes avant",
+    "30min": "30 minutes avant",
+    "1hour": "1 heure avant",
+    "1day": "1 jour avant",
+    "1week": "1 semaine avant"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "general": "Général",
+    "appearance": "Apparence",
+    "notifications": "Notifications",
+    "language": "Langue",
+    "firstDayOfWeek": "Premier jour de la semaine",
+    "dateFormat": "Format de date",
+    "timeFormat": "Format d'heure",
+    "showWeekNumbers": "Afficher les numéros de semaine",
+    "defaultView": "Vue par défaut",
+    "hourRange": "Plage horaire pour la vue Jour/Semaine",
+    "startHour": "Heure de début",
+    "endHour": "Heure de fin",
+    "workingHours": "Heures de travail",
+    "start": "Début",
+    "end": "Fin",
+    "highlightWorkingHours": "Mettre en évidence les heures de travail",
+    "highlightWeekends": "Mettre en évidence les week-ends",
+    "compactMode": "Mode compact",
+    "eventPreviewOnHover": "Afficher l'aperçu au survol",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "highContrast": "Contraste élevé",
+    "defaultReminder": "Rappel par défaut",
+    "soundNotifications": "Notifications sonores",
+    "desktopNotifications": "Notifications de bureau"
+  },
+  "calendars": {
+    "manage": "Gérer les calendriers",
+    "createNew": "Créer un nouveau calendrier",
+    "editCalendar": "Modifier le calendrier",
+    "name": "Nom",
+    "color": "Couleur",
+    "visible": "Visible",
+    "deleteCalendar": "Supprimer le calendrier",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce calendrier ? Tous les événements de ce calendrier seront également supprimés."
+  },
+  "contextMenu": {
+    "editEvent": "Modifier l'événement",
+    "deleteEvent": "Supprimer l'événement",
+    "duplicateEvent": "Dupliquer l'événement",
+    "changeCalendar": "Changer le calendrier",
+    "changeCategory": "Changer la catégorie"
+  },
+  "weekDays": {
+    "sunday": "Dimanche",
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi",
+    "sun": "Dim",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam"
+  },
+  "months": {
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "december": "Décembre"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/JJ/AAAA",
+    "ddmmyyyy": "JJ/MM/AAAA",
+    "yyyymmdd": "AAAA-MM-JJ"
+  },
+  "timeFormats": {
+    "12h": "12 heures",
+    "24h": "24 heures"
+  }
+}

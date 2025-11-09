@@ -1,0 +1,180 @@
+{
+  "common": {
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "close": "閉じる",
+    "create": "作成",
+    "search": "検索",
+    "today": "今日",
+    "allDay": "終日",
+    "more": "もっと見る"
+  },
+  "views": {
+    "month": "月",
+    "week": "週",
+    "day": "日"
+  },
+  "navigation": {
+    "previous": "前へ",
+    "next": "次へ",
+    "goToToday": "今日へ移動"
+  },
+  "sidebar": {
+    "miniCalendar": "ミニカレンダー",
+    "calendars": "カレンダー",
+    "categories": "カテゴリ",
+    "allCategories": "すべてのカテゴリ"
+  },
+  "event": {
+    "createNew": "新しい予定を作成",
+    "editEvent": "予定を編集",
+    "title": "タイトル",
+    "titleRequired": "タイトル *",
+    "description": "説明",
+    "location": "場所",
+    "startDate": "開始日",
+    "startDateRequired": "開始日 *",
+    "startTime": "開始時刻",
+    "startTimeRequired": "開始時刻 *",
+    "endDate": "終了日",
+    "endDateRequired": "終了日 *",
+    "endTime": "終了時刻",
+    "endTimeRequired": "終了時刻 *",
+    "calendar": "カレンダー",
+    "category": "カテゴリ",
+    "status": "ステータス",
+    "priority": "優先度",
+    "recurrence": "繰り返し",
+    "recurrenceEndDate": "繰り返し終了日（任意）",
+    "reminder": "リマインダー",
+    "attendees": "参加者（カンマ区切りのメール）",
+    "allDayEvent": "終日の予定"
+  },
+  "categories": {
+    "work": "仕事",
+    "personal": "個人",
+    "meeting": "会議",
+    "appointment": "アポイントメント",
+    "vacation": "休暇",
+    "birthday": "誕生日",
+    "other": "その他"
+  },
+  "statuses": {
+    "confirmed": "確定",
+    "tentative": "仮",
+    "cancelled": "キャンセル"
+  },
+  "priorities": {
+    "low": "低",
+    "medium": "中",
+    "high": "高"
+  },
+  "recurrence": {
+    "none": "繰り返しなし",
+    "daily": "毎日",
+    "weekly": "毎週",
+    "monthly": "毎月",
+    "yearly": "毎年",
+    "editRecurring": "繰り返し予定を編集",
+    "thisEvent": "この予定のみ",
+    "thisAndFuture": "この予定と今後の予定",
+    "allEvents": "すべての予定"
+  },
+  "reminders": {
+    "none": "なし",
+    "atTime": "予定の時刻",
+    "5min": "5分前",
+    "15min": "15分前",
+    "30min": "30分前",
+    "1hour": "1時間前",
+    "1day": "1日前",
+    "1week": "1週間前"
+  },
+  "settings": {
+    "title": "設定",
+    "general": "一般",
+    "appearance": "外観",
+    "notifications": "通知",
+    "language": "言語",
+    "firstDayOfWeek": "週の最初の曜日",
+    "dateFormat": "日付形式",
+    "timeFormat": "時刻形式",
+    "showWeekNumbers": "週番号を表示",
+    "defaultView": "デフォルト表示",
+    "hourRange": "日/週表示の時間範囲",
+    "startHour": "開始時刻",
+    "endHour": "終了時刻",
+    "workingHours": "勤務時間",
+    "start": "開始",
+    "end": "終了",
+    "highlightWorkingHours": "勤務時間を強調表示",
+    "highlightWeekends": "週末を強調表示",
+    "compactMode": "コンパクトモード",
+    "eventPreviewOnHover": "ホバー時に予定のプレビューを表示",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "highContrast": "高コントラスト",
+    "defaultReminder": "デフォルトのリマインダー",
+    "soundNotifications": "サウンド通知",
+    "desktopNotifications": "デスクトップ通知"
+  },
+  "calendars": {
+    "manage": "カレンダーを管理",
+    "createNew": "新しいカレンダーを作成",
+    "editCalendar": "カレンダーを編集",
+    "name": "名前",
+    "color": "色",
+    "visible": "表示",
+    "deleteCalendar": "カレンダーを削除",
+    "confirmDelete": "このカレンダーを削除してもよろしいですか？このカレンダーのすべての予定も削除されます。"
+  },
+  "contextMenu": {
+    "editEvent": "予定を編集",
+    "deleteEvent": "予定を削除",
+    "duplicateEvent": "予定を複製",
+    "changeCalendar": "カレンダーを変更",
+    "changeCategory": "カテゴリを変更"
+  },
+  "weekDays": {
+    "sunday": "日曜日",
+    "monday": "月曜日",
+    "tuesday": "火曜日",
+    "wednesday": "水曜日",
+    "thursday": "木曜日",
+    "friday": "金曜日",
+    "saturday": "土曜日",
+    "sun": "日",
+    "mon": "月",
+    "tue": "火",
+    "wed": "水",
+    "thu": "木",
+    "fri": "金",
+    "sat": "土"
+  },
+  "months": {
+    "january": "1月",
+    "february": "2月",
+    "march": "3月",
+    "april": "4月",
+    "may": "5月",
+    "june": "6月",
+    "july": "7月",
+    "august": "8月",
+    "september": "9月",
+    "october": "10月",
+    "november": "11月",
+    "december": "12月"
+  },
+  "dateFormats": {
+    "mmddyyyy": "MM/DD/YYYY",
+    "ddmmyyyy": "DD/MM/YYYY",
+    "yyyymmdd": "YYYY-MM-DD"
+  },
+  "timeFormats": {
+    "12h": "12時間",
+    "24h": "24時間"
+  }
+}

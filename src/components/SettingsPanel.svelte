@@ -1,4 +1,5 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import {
     THEMES,
