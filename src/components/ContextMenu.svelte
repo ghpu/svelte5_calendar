@@ -110,7 +110,9 @@
               onclick={() => handleAction(onChangeCategory, event, category.id)}
               class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
             >
-              <div class="w-3 h-3 rounded" style={`background-color: ${category.color}`}></div>
+              <div class="w-4 h-4" style={`color: ${category.color}`}>
+                {@html category.icon}
+              </div>
               <span class="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
             </button>
           {/each}

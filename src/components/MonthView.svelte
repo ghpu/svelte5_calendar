@@ -183,6 +183,7 @@
             {@const color = getEventColor(eventInfo)}
             {@const showTime = !eventInfo.isAllDay && eventInfo.isFirst}
             {@const isRecurring = isRecurringEvent(eventInfo)}
+            {@const categoryInfo = CATEGORIES.find(c => c.id === eventInfo.category)}
             <button
               draggable="true"
               ondragstart={(e) => handleDragStart(eventInfo, e)}
@@ -200,6 +201,11 @@
             >
               {#if !eventInfo.isFirst}
                 <span class="text-[10px] opacity-60">←</span>
+              {/if}
+              {#if categoryInfo}
+                <div class="w-3 h-3 flex-shrink-0 opacity-75" style={`color: ${categoryInfo.color}`}>
+                  {@html categoryInfo.icon}
+                </div>
               {/if}
               {#if isRecurring}
                 <span class="text-[10px] opacity-75">↻</span>

@@ -176,7 +176,9 @@
             class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500"
           />
           <div class="flex items-center gap-2 flex-1">
-            <div class="w-3 h-3 rounded" style={`background-color: ${category.color}`}></div>
+            <div class="w-5 h-5" style={`color: ${category.color}`}>
+              {@html category.icon}
+            </div>
             <span class="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
           </div>
         </label>

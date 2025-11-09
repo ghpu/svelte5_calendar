@@ -92,6 +92,7 @@
         {#each getAllDayEvents() as event}
           {@const color = getEventColor(event)}
           {@const isRecurring = isRecurringEvent(event)}
+          {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -106,6 +107,11 @@
             title={event.title}
           >
             <div class="font-bold flex items-center gap-1">
+              {#if categoryInfo}
+                <div class="w-4 h-4 flex-shrink-0 opacity-75" style={`color: ${categoryInfo.color}`}>
+                  {@html categoryInfo.icon}
+                </div>
+              {/if}
               {#if isRecurring}
                 <span class="text-xs">↻</span>
               {/if}
@@ -148,6 +154,7 @@
         {@const color = getEventColor(event)}
         {@const position = getEventPosition(event)}
         {@const isRecurring = isRecurringEvent(event)}
+        {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
         <button
           onclick={(e) => {
             e.stopPropagation()
@@ -169,6 +176,11 @@
           `}
         >
           <div class="font-bold text-base flex items-center gap-1">
+            {#if categoryInfo}
+              <div class="w-4 h-4 flex-shrink-0 opacity-75" style={`color: ${categoryInfo.color}`}>
+                {@html categoryInfo.icon}
+              </div>
+            {/if}
             {#if isRecurring}
               <span class="text-xs">↻</span>
             {/if}
