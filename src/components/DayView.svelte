@@ -6,6 +6,7 @@
   import { isWeekend, isWithinWorkingHours, formatDateByPattern } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
   import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
+  import { calculateEventPositions } from '../utils/eventPositioning.js'
 
   let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
@@ -71,7 +72,10 @@
   }
 
   function getTimedEvents() {
-    return cachedInstances.filter(event => !event.isAllDay)
+    const events = cachedInstances.filter(event => !event.isAllDay)
+
+    // Calculate positions for overlapping events
+    return calculateEventPositions(events)
   }
 </script>
 
@@ -155,6 +159,8 @@
         {@const position = getEventPosition(event)}
         {@const isRecurring = isRecurringEvent(event)}
         {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
+        {@const eventWidth = event.widthPercent}
+        {@const eventLeft = 84 + (event.leftPercent * 0.01 * (100 - 84))}
         <button
           onclick={(e) => {
             e.stopPropagation()
@@ -169,8 +175,8 @@
             background-color: ${color}20;
             color: ${color};
             border-left: 4px solid ${color};
-            left: 84px;
-            right: 8px;
+            left: calc(${eventLeft}px);
+            width: calc(${eventWidth}% * (100vw - 84px) / 100 - 8px);
             top: ${position.top};
             min-height: ${position.height};
           `}
