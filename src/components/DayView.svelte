@@ -1,12 +1,19 @@
 <script>
   import { format } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { settingsStore } from '../stores/settingsStore.svelte.js'
+  import { isWeekend, isWithinWorkingHours, formatDateByPattern } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
 
-  let { onEventClick } = $props()
+  let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
   const store = calendarStore
-  const hours = Array.from({ length: 24 }, (_, i) => i)
+  const settings = settingsStore
+
+  $effect(() => {
+    store.currentDate
+    store.events
+  })
 
   function getCategoryColor(categoryId) {
     const category = CATEGORIES.find(c => c.id === categoryId)
@@ -20,33 +27,52 @@
     const duration = (end - start) / (1000 * 60 * 60)
 
     return {
-      top: `${startHour * 60}px`,
+      top: `${(startHour - settings.hourRangeStart) * 60}px`,
       height: `${duration * 60}px`
     }
   }
 
-  $effect(() => {
-    store.currentDate
-    store.events
-  })
+  function handleTimeSlotClick(hour) {
+    const time = `${hour.toString().padStart(2, '0')}:00`
+    onTimeSlotClick(store.currentDate, time)
+  }
+
+  function getVisibleHours() {
+    return Array.from(
+      { length: settings.hourRangeEnd - settings.hourRangeStart },
+      (_, i) => settings.hourRangeStart + i
+    )
+  }
+
+  function isWorkingHour(hour) {
+    return settings.highlightWorkingHours &&
+           isWithinWorkingHours(hour, settings.workingHoursStart, settings.workingHoursEnd)
+  }
 </script>
 
-<div class="flex flex-col h-full bg-white overflow-hidden">
+<div class="flex flex-col h-full bg-white dark:bg-gray-800 overflow-hidden">
   <!-- Day header -->
-  <div class="border-b border-gray-200 p-4 sticky top-0 bg-white z-10">
-    <div class="text-2xl font-bold text-gray-900">{format(store.currentDate, 'EEEE')}</div>
-    <div class="text-sm text-gray-600">{format(store.currentDate, 'MMMM d, yyyy')}</div>
+  <div class="border-b border-gray-200 dark:border-gray-700 p-4 sticky top-0 bg-white dark:bg-gray-800 z-10">
+    <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">{format(store.currentDate, 'EEEE')}</div>
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      {formatDateByPattern(store.currentDate, settings.dateFormat)}
+    </div>
   </div>
 
   <!-- Time grid -->
   <div class="flex-1 overflow-y-auto">
     <div class="relative">
-      {#each hours as hour}
-        <div class="flex border-b border-gray-200" style="height: 60px;">
-          <div class="w-20 text-xs text-gray-500 text-right pr-2 pt-1 border-r border-gray-200">
-            {format(new Date().setHours(hour, 0, 0, 0), 'h:mm a')}
+      {#each getVisibleHours() as hour}
+        {@const isWeekendDay = isWeekend(store.currentDate)}
+        <div class="flex border-b border-gray-200 dark:border-gray-700" style="height: 60px;">
+          <div class="w-20 text-xs text-gray-500 dark:text-gray-400 text-right pr-2 pt-1 border-r border-gray-200 dark:border-gray-700">
+            {format(new Date().setHours(hour, 0, 0, 0), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
           </div>
-          <div class="flex-1 hover:bg-gray-50 transition-colors"></div>
+          <div
+            class="flex-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer {isWorkingHour(hour) ? 'working-hours' : ''} {isWeekendDay && settings.highlightWeekends ? 'weekend' : ''}"
+            onclick={() => handleTimeSlotClick(hour)}
+            oncontextmenu={(e) => onContextMenu(e, null)}
+          ></div>
         </div>
       {/each}
 
@@ -55,7 +81,14 @@
         {@const color = getCategoryColor(event.category)}
         {@const position = getEventPosition(event)}
         <button
-          onclick={() => onEventClick(event)}
+          onclick={(e) => {
+            e.stopPropagation()
+            onEventClick(event)
+          }}
+          oncontextmenu={(e) => {
+            e.stopPropagation()
+            onContextMenu(e, event)
+          }}
           class="absolute px-3 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
           style={`
             background-color: ${color}20;
@@ -69,7 +102,7 @@
         >
           <div class="font-bold text-base">{event.title}</div>
           <div class="text-xs opacity-75 mt-1">
-            {format(new Date(event.startDate), 'h:mm a')} - {format(new Date(event.endDate), 'h:mm a')}
+            {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
           </div>
           {#if event.location}
             <div class="text-xs opacity-75 mt-1 flex items-center gap-1">

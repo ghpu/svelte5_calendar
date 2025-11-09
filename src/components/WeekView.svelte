@@ -1,13 +1,19 @@
 <script>
   import { format, isToday } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
-  import { getWeekDays } from '../utils/dateUtils.js'
+  import { settingsStore } from '../stores/settingsStore.svelte.js'
+  import { getWeekDays, isWeekend, isWithinWorkingHours } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
 
-  let { onEventClick } = $props()
+  let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
   const store = calendarStore
-  const hours = Array.from({ length: 24 }, (_, i) => i)
+  const settings = settingsStore
+
+  $effect(() => {
+    store.currentDate
+    store.events
+  })
 
   function getCategoryColor(categoryId) {
     const category = CATEGORIES.find(c => c.id === categoryId)
@@ -26,25 +32,38 @@
     }
   }
 
-  $effect(() => {
-    store.currentDate
-    store.events
-  })
+  function handleTimeSlotClick(day, hour) {
+    const time = `${hour.toString().padStart(2, '0')}:00`
+    onTimeSlotClick(day, time)
+  }
+
+  function getVisibleHours() {
+    return Array.from(
+      { length: settings.hourRangeEnd - settings.hourRangeStart },
+      (_, i) => settings.hourRangeStart + i
+    )
+  }
+
+  function isWorkingHour(hour) {
+    return settings.highlightWorkingHours &&
+           isWithinWorkingHours(hour, settings.workingHoursStart, settings.workingHoursEnd)
+  }
 </script>
 
-<div class="flex flex-col h-full bg-white overflow-hidden">
+<div class="flex flex-col h-full bg-white dark:bg-gray-800 overflow-hidden">
   <!-- Day headers -->
-  <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 sticky top-0 bg-white z-10">
-    <div class="py-3 border-r border-gray-200"></div>
-    {#each getWeekDays(store.currentDate) as day}
+  <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+    <div class="py-3 border-r border-gray-200 dark:border-gray-700"></div>
+    {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day}
       {@const isTodayDate = isToday(day)}
-      <div class="py-3 text-center border-r border-gray-200 last:border-r-0">
-        <div class="text-xs font-medium text-gray-600">{format(day, 'EEE')}</div>
+      {@const isWeekendDay = isWeekend(day)}
+      <div class="py-3 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0 {isWeekendDay && settings.highlightWeekends ? 'bg-gray-100/50 dark:bg-gray-900/50' : ''}">
+        <div class="text-xs font-medium text-gray-600 dark:text-gray-400">{format(day, 'EEE')}</div>
         <div
           class={`text-lg font-semibold ${
             isTodayDate
               ? 'inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white'
-              : 'text-gray-900'
+              : 'text-gray-900 dark:text-gray-100'
           }`}
         >
           {format(day, 'd')}
@@ -56,25 +75,37 @@
   <!-- Time grid -->
   <div class="flex-1 overflow-y-auto">
     <div class="relative">
-      {#each hours as hour}
-        <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200" style="height: 60px;">
-          <div class="text-xs text-gray-500 text-right pr-2 pt-1 border-r border-gray-200">
-            {format(new Date().setHours(hour, 0, 0, 0), 'h:mm a')}
+      {#each getVisibleHours() as hour}
+        <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700" style="height: 60px;">
+          <div class="text-xs text-gray-500 dark:text-gray-400 text-right pr-2 pt-1 border-r border-gray-200 dark:border-gray-700">
+            {format(new Date().setHours(hour, 0, 0, 0), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
           </div>
-          {#each getWeekDays(store.currentDate) as day}
-            <div class="border-r border-gray-200 last:border-r-0 relative hover:bg-gray-50 transition-colors"></div>
+          {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day}
+            {@const isWeekendDay = isWeekend(day)}
+            <div
+              class="border-r border-gray-200 dark:border-gray-700 last:border-r-0 relative hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer {isWorkingHour(hour) ? 'working-hours' : ''} {isWeekendDay && settings.highlightWeekends ? 'weekend' : ''}"
+              onclick={() => handleTimeSlotClick(day, hour)}
+              oncontextmenu={(e) => onContextMenu(e, null)}
+            ></div>
           {/each}
         </div>
       {/each}
 
       <!-- Events overlay -->
-      {#each getWeekDays(store.currentDate) as day, dayIndex}
+      {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day, dayIndex}
         {@const dayEvents = store.getEventsForDate(day)}
         {#each dayEvents as event}
           {@const color = getCategoryColor(event.category)}
           {@const position = getEventPosition(event)}
           <button
-            onclick={() => onEventClick(event)}
+            onclick={(e) => {
+              e.stopPropagation()
+              onEventClick(event)
+            }}
+            oncontextmenu={(e) => {
+              e.stopPropagation()
+              onContextMenu(e, event)
+            }}
             class="absolute px-2 py-1 rounded text-xs font-medium truncate hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
             style={`
               background-color: ${color}20;
@@ -89,7 +120,7 @@
           >
             <div class="font-semibold">{event.title}</div>
             <div class="text-[10px] opacity-75">
-              {format(new Date(event.startDate), 'h:mm a')} - {format(new Date(event.endDate), 'h:mm a')}
+              {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
             </div>
           </button>
         {/each}

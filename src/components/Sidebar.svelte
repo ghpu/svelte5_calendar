@@ -25,18 +25,18 @@
   }
 </script>
 
-<aside class="w-80 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
+<aside class="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full overflow-hidden">
   <!-- Search -->
-  <div class="p-4 border-b border-gray-200">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
     <div class="relative">
       <input
         type="text"
         bind:value={store.searchQuery}
         placeholder="Search events... (Press /)"
-        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
       />
       <svg
-        class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"
+        class="absolute left-3 top-2.5 w-5 h-5 text-gray-400 dark:text-gray-500"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -52,31 +52,31 @@
   </div>
 
   <!-- Mini calendar -->
-  <div class="p-4 border-b border-gray-200">
-    <div class="text-sm font-semibold text-gray-700 mb-2">
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
       {format(store.currentDate, 'MMMM yyyy')}
     </div>
-    <div class="text-xs text-gray-500">
+    <div class="text-xs text-gray-500 dark:text-gray-400">
       Quick navigation for current period
     </div>
   </div>
 
   <!-- Categories filter -->
-  <div class="p-4 border-b border-gray-200">
-    <h3 class="text-sm font-semibold text-gray-700 mb-3">Categories</h3>
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Categories</h3>
     <div class="space-y-2">
       {#each CATEGORIES as category}
         {@const isSelected = store.selectedCategories.includes(category.id)}
-        <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors">
+        <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
           <input
             type="checkbox"
             checked={isSelected}
             onchange={() => store.toggleCategory(category.id)}
-            class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500"
           />
           <div class="flex items-center gap-2 flex-1">
             <div class="w-3 h-3 rounded" style={`background-color: ${category.color}`}></div>
-            <span class="text-sm text-gray-700">{category.name}</span>
+            <span class="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
           </div>
         </label>
       {/each}
@@ -84,11 +84,11 @@
   </div>
 
   <!-- Timezone -->
-  <div class="p-4 border-b border-gray-200">
-    <h3 class="text-sm font-semibold text-gray-700 mb-3">Timezone</h3>
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Timezone</h3>
     <select
       bind:value={store.timezone}
-      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
     >
       {#each TIMEZONES as tz}
         <option value={tz}>{tz}</option>
@@ -100,7 +100,7 @@
   <div class="p-4 border-b border-gray-200 space-y-2">
     <button
       onclick={() => store.exportToICal()}
-      class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -110,7 +110,7 @@
 
     <button
       onclick={handleImportClick}
-      class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      class="w-full flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -131,7 +131,7 @@
   <div class="p-4 flex-1">
     <button
       onclick={() => showShortcuts = !showShortcuts}
-      class="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+      class="w-full flex items-center justify-between px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
     >
       <span class="flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,9 +152,9 @@
     {#if showShortcuts}
       <div class="mt-3 space-y-2 text-xs">
         {#each KEYBOARD_SHORTCUTS as shortcut}
-          <div class="flex items-center justify-between text-gray-600">
+          <div class="flex items-center justify-between text-gray-600 dark:text-gray-400">
             <span>{shortcut.description}</span>
-            <kbd class="px-2 py-1 bg-gray-100 rounded border border-gray-300 font-mono">
+            <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600 font-mono text-gray-700 dark:text-gray-300">
               {shortcut.key}
             </kbd>
           </div>
@@ -164,15 +164,15 @@
   </div>
 
   <!-- Stats -->
-  <div class="p-4 bg-gray-50 border-t border-gray-200">
-    <div class="text-xs text-gray-600">
+  <div class="p-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+    <div class="text-xs text-gray-600 dark:text-gray-400">
       <div class="flex items-center justify-between mb-1">
         <span>Total Events:</span>
-        <span class="font-semibold">{store.events.length}</span>
+        <span class="font-semibold text-gray-900 dark:text-gray-100">{store.events.length}</span>
       </div>
       <div class="flex items-center justify-between">
         <span>Filtered Events:</span>
-        <span class="font-semibold">{store.filteredEvents.length}</span>
+        <span class="font-semibold text-gray-900 dark:text-gray-100">{store.filteredEvents.length}</span>
       </div>
     </div>
   </div>
