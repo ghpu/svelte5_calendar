@@ -9,6 +9,7 @@
   import Sidebar from './components/Sidebar.svelte'
   import SettingsPanel from './components/SettingsPanel.svelte'
   import ContextMenu from './components/ContextMenu.svelte'
+  import RecurringEditModal from './components/RecurringEditModal.svelte'
   import { KEYBOARD_SHORTCUTS } from './utils/constants.js'
 
   const store = calendarStore
@@ -16,6 +17,13 @@
   let selectedDateForNewEvent = $state(null)
   let selectedTimeForNewEvent = $state(null)
   let showSettings = $state(false)
+
+  // Recurring edit modal state
+  let recurringEditModal = $state({
+    visible: false,
+    action: 'edit', // 'edit' or 'delete'
+    event: null
+  })
 
   // Context menu state
   let contextMenu = $state({
@@ -46,7 +54,16 @@
   }
 
   function handleEventClick(event) {
-    store.openEventModal(event)
+    // Check if this is a recurring instance
+    if (store.isRecurringInstance(event)) {
+      recurringEditModal = {
+        visible: true,
+        action: 'edit',
+        event
+      }
+    } else {
+      store.openEventModal(event)
+    }
   }
 
   function handleCloseModal() {
@@ -67,7 +84,16 @@
   }
 
   function handleContextMenuEdit(event) {
-    store.openEventModal(event)
+    // Check if this is a recurring instance
+    if (store.isRecurringInstance(event)) {
+      recurringEditModal = {
+        visible: true,
+        action: 'edit',
+        event
+      }
+    } else {
+      store.openEventModal(event)
+    }
   }
 
   function handleContextMenuDuplicate(event) {
@@ -75,8 +101,50 @@
   }
 
   function handleContextMenuDelete(event) {
-    if (confirm('Are you sure you want to delete this event?')) {
-      store.deleteEvent(event.id)
+    // Check if this is a recurring instance
+    if (store.isRecurringInstance(event)) {
+      recurringEditModal = {
+        visible: true,
+        action: 'delete',
+        event
+      }
+    } else {
+      if (confirm('Are you sure you want to delete this event?')) {
+        store.deleteEvent(event.id)
+      }
+    }
+  }
+
+  // Recurring edit modal handlers
+  function handleEditOccurrence() {
+    const event = recurringEditModal.event
+    // Get the parent event to use as template
+    const parentEvent = store.getParentEvent(event.id)
+    // Open modal with instance data (will create exception)
+    store.openEventModal({
+      ...event,
+      _isEditingInstance: true,
+      _originalInstance: event
+    })
+  }
+
+  function handleEditSeries() {
+    const event = recurringEditModal.event
+    const parentEvent = store.getParentEvent(event.id)
+    if (parentEvent) {
+      store.openEventModal(parentEvent)
+    }
+  }
+
+  function handleDeleteOccurrence() {
+    const event = recurringEditModal.event
+    store.deleteRecurringInstance(event)
+  }
+
+  function handleDeleteSeries() {
+    const event = recurringEditModal.event
+    if (confirm('Are you sure you want to delete all events in this series?')) {
+      store.deleteRecurringSeries(event.id)
     }
   }
 
@@ -254,4 +322,12 @@
   onChangeCategory={handleContextMenuChangeCategory}
   onChangeStatus={handleContextMenuChangeStatus}
   onChangePriority={handleContextMenuChangePriority}
+/>
+
+<RecurringEditModal
+  isOpen={recurringEditModal.visible}
+  action={recurringEditModal.action}
+  onClose={() => recurringEditModal.visible = false}
+  onEditOccurrence={recurringEditModal.action === 'edit' ? handleEditOccurrence : handleDeleteOccurrence}
+  onEditSeries={recurringEditModal.action === 'edit' ? handleEditSeries : handleDeleteSeries}
 />

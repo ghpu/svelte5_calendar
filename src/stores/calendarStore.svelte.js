@@ -109,6 +109,58 @@ class CalendarStore {
     this.saveToStorage()
   }
 
+  // Recurring event methods
+  isRecurringInstance(event) {
+    return event && event.isRecurring && event.recurringParentId
+  }
+
+  getParentEvent(instanceId) {
+    // Extract parent ID from instance ID (format: "parentId_timestamp")
+    const parentId = instanceId.split('_')[0]
+    return this.events.find(e => e.id === parentId)
+  }
+
+  editRecurringSeries(instanceId, updates) {
+    const parentId = instanceId.split('_')[0]
+    this.updateEvent(parentId, updates)
+  }
+
+  editRecurringInstance(instance, updates) {
+    // Create an exception event for this specific occurrence
+    const exceptionEvent = {
+      ...instance,
+      ...updates,
+      id: crypto.randomUUID(), // New unique ID
+      isRecurring: false, // Mark as non-recurring
+      isException: true,
+      originalEventId: instance.recurringParentId,
+      exceptionDate: instance.instanceDate,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    this.events.push(exceptionEvent)
+    this.saveToStorage()
+    return exceptionEvent
+  }
+
+  deleteRecurringSeries(instanceId) {
+    const parentId = instanceId.split('_')[0]
+    this.deleteEvent(parentId)
+  }
+
+  deleteRecurringInstance(instance) {
+    // Create a deletion exception
+    const deletionException = {
+      id: crypto.randomUUID(),
+      isDeleted: true,
+      originalEventId: instance.recurringParentId,
+      exceptionDate: instance.instanceDate,
+      createdAt: new Date().toISOString()
+    }
+    this.events.push(deletionException)
+    this.saveToStorage()
+  }
+
   duplicateEvent(event) {
     const duplicated = {
       ...event,
@@ -174,9 +226,11 @@ class CalendarStore {
 
     // Calendar visibility filter
     const visibleCalendarIds = calendarsStore.getVisibleCalendarIds()
-    filtered = filtered.filter(event =>
-      event.calendarId && visibleCalendarIds.includes(event.calendarId)
-    )
+    const defaultCalendarId = calendarsStore.getDefaultCalendar().id
+    filtered = filtered.filter(event => {
+      const calendarId = event.calendarId || defaultCalendarId
+      return visibleCalendarIds.includes(calendarId)
+    })
 
     // Search filter
     if (this.searchQuery) {
@@ -207,7 +261,26 @@ class CalendarStore {
     const stored = localStorage.getItem('calendar-events')
     if (stored) {
       try {
-        this.events = JSON.parse(stored)
+        let parsedEvents = JSON.parse(stored)
+
+        // MIGRATION: Add default calendarId to events without one
+        let needsMigration = false
+        this.events = parsedEvents.map(event => {
+          if (!event.calendarId) {
+            needsMigration = true
+            return {
+              ...event,
+              calendarId: calendarsStore.getDefaultCalendar().id
+            }
+          }
+          return event
+        })
+
+        // Save migrated data back to localStorage
+        if (needsMigration) {
+          console.log('Migrated events without calendarId to default calendar')
+          this.saveToStorage()
+        }
       } catch (e) {
         console.error('Failed to load events from storage', e)
       }

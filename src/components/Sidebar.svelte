@@ -5,6 +5,7 @@
   import { CATEGORIES, TIMEZONES, KEYBOARD_SHORTCUTS } from '../utils/constants.js'
   import { format, startOfMonth, addMonths, subMonths, isSameMonth, isToday, isSameDay } from 'date-fns'
   import { getMonthDays } from '../utils/dateUtils.js'
+  import CalendarManagementModal from './CalendarManagementModal.svelte'
 
   let { onImport } = $props()
 
@@ -12,6 +13,7 @@
   const calendars = calendarsStore
   const settings = settingsStore
   let showShortcuts = $state(false)
+  let showCalendarManagement = $state(false)
   let fileInput
   let miniCalendarDate = $state(new Date())
 
@@ -130,7 +132,18 @@
 
   <!-- Calendars -->
   <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Calendars</h3>
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Calendars</h3>
+      <button
+        onclick={() => showCalendarManagement = true}
+        class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        title="Manage calendars"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      </button>
+    </div>
     <div class="space-y-2">
       {#each calendars.calendars as calendar}
         <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
@@ -265,3 +278,8 @@
     </div>
   </div>
 </aside>
+
+<CalendarManagementModal
+  isOpen={showCalendarManagement}
+  onClose={() => showCalendarManagement = false}
+/>

@@ -1,11 +1,11 @@
 <script>
-  import { format, isToday } from 'date-fns'
+  import { format, isToday, startOfWeek, endOfWeek, isSameDay, startOfDay, endOfDay } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { getWeekDays, isWeekend, isWithinWorkingHours } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
-  import { isRecurringEvent } from '../utils/recurringEvents.js'
+  import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
 
   let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
@@ -13,9 +13,23 @@
   const calendars = calendarsStore
   const settings = settingsStore
 
+  // Memoize recurring instances for performance
+  let cachedInstances = $state([])
+  let cacheKey = $state('')
+
   $effect(() => {
-    store.currentDate
-    store.events
+    // Regenerate cached instances only when week or events change
+    const weekStart = startOfWeek(store.currentDate, { weekStartsOn: settings.firstDayOfWeek })
+    const newKey = `${weekStart.getTime()}-${store.events.length}-${store.filteredEvents.length}`
+
+    if (cacheKey !== newKey) {
+      const weekEnd = endOfWeek(store.currentDate, { weekStartsOn: settings.firstDayOfWeek })
+
+      // Generate instances only once per week
+      cachedInstances = getAllEventInstancesInRange(store.filteredEvents, weekStart, weekEnd)
+
+      cacheKey = newKey
+    }
   })
 
   function getEventColor(event) {
@@ -59,11 +73,28 @@
   }
 
   function getAllDayEvents(day) {
-    return store.getEventsForDate(day).filter(event => event.isAllDay)
+    const dayStart = startOfDay(day)
+    const dayEnd = endOfDay(day)
+
+    return cachedInstances.filter(event => {
+      if (!event.isAllDay) return false
+
+      const eventStart = startOfDay(new Date(event.startDate))
+      const eventEnd = startOfDay(new Date(event.endDate))
+
+      // Check if event overlaps with this day
+      return isSameDay(eventStart, day) || isSameDay(eventEnd, day) ||
+             (eventStart < dayStart && eventEnd > dayEnd)
+    })
   }
 
   function getTimedEvents(day) {
-    return store.getEventsForDate(day).filter(event => !event.isAllDay)
+    return cachedInstances.filter(event => {
+      if (event.isAllDay) return false
+
+      const eventStart = new Date(event.startDate)
+      return isSameDay(eventStart, day)
+    })
   }
 </script>
 

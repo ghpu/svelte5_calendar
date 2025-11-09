@@ -1,11 +1,11 @@
 <script>
-  import { format } from 'date-fns'
+  import { format, startOfDay, endOfDay, isSameDay } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { isWeekend, isWithinWorkingHours, formatDateByPattern } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
-  import { isRecurringEvent } from '../utils/recurringEvents.js'
+  import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
 
   let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
@@ -13,9 +13,23 @@
   const calendars = calendarsStore
   const settings = settingsStore
 
+  // Memoize recurring instances for performance
+  let cachedInstances = $state([])
+  let cacheKey = $state('')
+
   $effect(() => {
-    store.currentDate
-    store.events
+    // Regenerate cached instances only when day or events change
+    const dayStart = startOfDay(store.currentDate)
+    const newKey = `${dayStart.getTime()}-${store.events.length}-${store.filteredEvents.length}`
+
+    if (cacheKey !== newKey) {
+      const dayEnd = endOfDay(store.currentDate)
+
+      // Generate instances only once per day
+      cachedInstances = getAllEventInstancesInRange(store.filteredEvents, dayStart, dayEnd)
+
+      cacheKey = newKey
+    }
   })
 
   function getEventColor(event) {
@@ -53,11 +67,11 @@
   }
 
   function getAllDayEvents() {
-    return store.getEventsForDate(store.currentDate).filter(event => event.isAllDay)
+    return cachedInstances.filter(event => event.isAllDay)
   }
 
   function getTimedEvents() {
-    return store.getEventsForDate(store.currentDate).filter(event => !event.isAllDay)
+    return cachedInstances.filter(event => !event.isAllDay)
   }
 </script>
 

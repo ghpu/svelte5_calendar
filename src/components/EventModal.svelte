@@ -84,7 +84,14 @@
     }
 
     if (event) {
-      store.updateEvent(event.id, eventData)
+      // Check if editing a recurring instance
+      if (event._isEditingInstance && event._originalInstance) {
+        // Create an exception for this specific occurrence
+        store.editRecurringInstance(event._originalInstance, eventData)
+      } else {
+        // Regular update
+        store.updateEvent(event.id, eventData)
+      }
     } else {
       store.addEvent(eventData)
     }

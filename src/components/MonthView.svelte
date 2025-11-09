@@ -1,11 +1,11 @@
 <script>
-  import { format, isSameMonth, isToday, isSameDay, startOfDay, endOfDay, isWithinInterval, addDays, differenceInDays, getWeek } from 'date-fns'
+  import { format, isSameMonth, isToday, isSameDay, startOfDay, endOfDay, isWithinInterval, addDays, differenceInDays, getWeek, startOfMonth, endOfMonth, isAfter, isBefore } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { getMonthDays, createDateTimeString, getTimeFromDateTime } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
-  import { isRecurringEvent } from '../utils/recurringEvents.js'
+  import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
 
   let { onEventClick, onDateClick, onContextMenu } = $props()
 
@@ -23,12 +23,25 @@
   let dragOverDate = $state(null)
   let monthDays = $state([])
 
+  // Memoize recurring instances for performance
+  let cachedInstances = $state([])
+  let cacheKey = $state('')
+
   // Get events for a specific day with multi-day info
   function getEventsForDay(day) {
     const dayStart = startOfDay(day)
     const dayEnd = endOfDay(day)
 
-    return store.getEventsForDate(day).map(event => {
+    // Filter from cached instances instead of regenerating
+    const dayEvents = cachedInstances.filter(event => {
+      const eventStart = startOfDay(new Date(event.startDate))
+      const eventEnd = startOfDay(new Date(event.endDate))
+
+      // Check if event overlaps with this day
+      return !isAfter(eventStart, dayEnd) && !isBefore(eventEnd, dayStart)
+    })
+
+    return dayEvents.map(event => {
       const eventStart = startOfDay(new Date(event.startDate))
       const eventEnd = startOfDay(new Date(event.endDate))
       const isFirst = isSameDay(dayStart, eventStart)
@@ -47,7 +60,18 @@
 
   $effect(() => {
     monthDays = getMonthDays(store.currentDate, settings.firstDayOfWeek)
-    store.events // track changes
+
+    // Regenerate cached instances only when month or events change
+    const newKey = `${store.currentDate.getFullYear()}-${store.currentDate.getMonth()}-${store.events.length}-${store.filteredEvents.length}`
+    if (cacheKey !== newKey) {
+      const monthStart = startOfMonth(store.currentDate)
+      const monthEnd = endOfMonth(store.currentDate)
+
+      // Generate instances only once per month
+      cachedInstances = getAllEventInstancesInRange(store.filteredEvents, monthStart, monthEnd)
+
+      cacheKey = newKey
+    }
   })
 
   function getEventColor(event) {

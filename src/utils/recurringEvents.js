@@ -92,10 +92,32 @@ export function isRecurringInstance(event) {
 export function getAllEventInstancesInRange(events, rangeStart, rangeEnd) {
   const allInstances = []
 
+  // Get deletion exceptions (instances that should be hidden)
+  const deletionExceptions = events
+    .filter(e => e.isDeleted && e.exceptionDate)
+    .map(e => ({
+      eventId: e.originalEventId,
+      date: e.exceptionDate
+    }))
+
   events.forEach(event => {
+    // Skip deletion markers
+    if (event.isDeleted) {
+      return
+    }
+
     if (isRecurringEvent(event)) {
       const instances = generateRecurringInstances(event, rangeStart, rangeEnd)
-      allInstances.push(...instances)
+
+      // Filter out deleted instances
+      const filteredInstances = instances.filter(instance => {
+        return !deletionExceptions.some(exception =>
+          exception.eventId === event.id &&
+          isSameDay(new Date(exception.date), new Date(instance.instanceDate))
+        )
+      })
+
+      allInstances.push(...filteredInstances)
     } else {
       // Check if non-recurring event falls in range
       const eventStart = startOfDay(new Date(event.startDate))
