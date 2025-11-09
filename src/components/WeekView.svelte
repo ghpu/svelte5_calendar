@@ -73,20 +73,47 @@
            isWithinWorkingHours(hour, settings.workingHoursStart, settings.workingHoursEnd)
   }
 
-  function getAllDayEvents(day) {
-    const dayStart = startOfDay(day)
-    const dayEnd = endOfDay(day)
+  function getAllDayEvents() {
+    const weekDays = getWeekDays(store.currentDate, settings.firstDayOfWeek)
+    const weekStart = startOfDay(weekDays[0])
+    const weekEnd = endOfDay(weekDays[6])
 
-    return cachedInstances.filter(event => {
-      if (!event.isAllDay) return false
+    const allDayEvents = cachedInstances.filter(event => event.isAllDay)
 
+    // Process each event to calculate its span across the week
+    const processedEvents = []
+    allDayEvents.forEach(event => {
       const eventStart = startOfDay(new Date(event.startDate))
       const eventEnd = startOfDay(new Date(event.endDate))
 
-      // Check if event overlaps with this day
-      return isSameDay(eventStart, day) || isSameDay(eventEnd, day) ||
-             (eventStart < dayStart && eventEnd > dayEnd)
+      // Check if event overlaps with this week
+      if (eventStart > weekEnd || eventEnd < weekStart) return
+
+      // Find which day column the event starts in (within this week)
+      const displayStart = eventStart < weekStart ? weekStart : eventStart
+      const displayEnd = eventEnd > weekEnd ? weekEnd : eventEnd
+
+      const startDayIndex = weekDays.findIndex(day => isSameDay(day, displayStart))
+      if (startDayIndex === -1) return
+
+      // Calculate how many days this event spans in this week
+      let spanDays = 1
+      for (let i = startDayIndex + 1; i < weekDays.length; i++) {
+        if (displayEnd >= startOfDay(weekDays[i])) {
+          spanDays++
+        } else {
+          break
+        }
+      }
+
+      processedEvents.push({
+        ...event,
+        startDayIndex,
+        spanDays
+      })
     })
+
+    return processedEvents
   }
 
   function getTimedEvents(day) {
@@ -125,43 +152,49 @@
   </div>
 
   <!-- All-day events row -->
-  <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 min-h-[40px]">
+  <div class="relative grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 min-h-[40px]">
     <div class="py-2 px-2 text-xs text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
       All Day
     </div>
-    {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day}
-      {@const allDayEvents = getAllDayEvents(day)}
-      <div class="border-r border-gray-200 dark:border-gray-700 last:border-r-0 p-1 space-y-1">
-        {#each allDayEvents as event}
-          {@const color = getEventColor(event)}
-          {@const isRecurring = isRecurringEvent(event)}
-          {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
-          <button
-            onclick={(e) => {
-              e.stopPropagation()
-              onEventClick(event)
-            }}
-            oncontextmenu={(e) => {
-              e.stopPropagation()
-              onContextMenu(e, event)
-            }}
-            class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1"
-            style={`background-color: ${color}20; color: ${color}; border-left: 3px solid ${color}`}
-            title={event.title}
-          >
-            {#if categoryInfo}
-              <div class="w-3 h-3 flex-shrink-0 opacity-75" style={`color: ${categoryInfo.color}`}>
-                {@html categoryInfo.icon}
-              </div>
-            {/if}
-            {#if isRecurring}
-              <span class="text-[10px]">↻</span>
-            {/if}
-            <span class="flex-1 truncate">{event.title}</span>
-          </button>
-        {/each}
-      </div>
-    {/each}
+    <div class="col-span-7 relative p-1 space-y-1">
+      {#each getAllDayEvents() as event}
+        {@const color = getEventColor(event)}
+        {@const isRecurring = isRecurringEvent(event)}
+        {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
+        {@const dayColumnWidth = (100 / 7)}
+        {@const eventLeft = event.startDayIndex * dayColumnWidth}
+        {@const eventWidth = event.spanDays * dayColumnWidth}
+        <button
+          onclick={(e) => {
+            e.stopPropagation()
+            onEventClick(event)
+          }}
+          oncontextmenu={(e) => {
+            e.stopPropagation()
+            onContextMenu(e, event)
+          }}
+          class="absolute text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1"
+          style={`
+            background-color: ${color}20;
+            color: ${color};
+            border-left: 3px solid ${color};
+            left: calc(${eventLeft}% + 2px);
+            width: calc(${eventWidth}% - 4px);
+          `}
+          title={event.title}
+        >
+          {#if categoryInfo}
+            <div class="w-3 h-3 flex-shrink-0 opacity-75" style={`color: ${categoryInfo.color}`}>
+              {@html categoryInfo.icon}
+            </div>
+          {/if}
+          {#if isRecurring}
+            <span class="text-[10px]">↻</span>
+          {/if}
+          <span class="flex-1 truncate">{event.title}</span>
+        </button>
+      {/each}
+    </div>
   </div>
 
   <!-- Time grid -->
