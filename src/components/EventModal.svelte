@@ -1,11 +1,13 @@
 <script>
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { CATEGORIES, RECURRENCE_TYPES, REMINDER_OPTIONS, EVENT_STATUS, EVENT_PRIORITY } from '../utils/constants.js'
   import { getDateFromDateTime, getTimeFromDateTime, createDateTimeString } from '../utils/dateUtils.js'
 
   let { event = null, onClose, initialDate = null } = $props()
 
   const store = calendarStore
+  const calendars = calendarsStore
 
   let formData = $state({
     title: '',
@@ -15,6 +17,7 @@
     endDate: '',
     endTime: '10:00',
     location: '',
+    calendarId: calendars.getDefaultCalendar().id,
     category: 'work',
     status: 'busy',
     priority: 'normal',
@@ -34,6 +37,7 @@
       formData.endDate = getDateFromDateTime(event.endDate)
       formData.endTime = getTimeFromDateTime(event.endDate)
       formData.location = event.location || ''
+      formData.calendarId = event.calendarId || calendars.getDefaultCalendar().id
       formData.category = event.category || 'work'
       formData.status = event.status || 'busy'
       formData.priority = event.priority || 'normal'
@@ -63,6 +67,7 @@
       startDate: createDateTimeString(formData.startDate, formData.startTime),
       endDate: createDateTimeString(formData.endDate, formData.endTime),
       location: formData.location,
+      calendarId: formData.calendarId,
       category: formData.category,
       status: formData.status,
       priority: formData.priority,
@@ -194,6 +199,19 @@
             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Add location"
           />
+        </div>
+
+        <!-- Calendar -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Calendar</label>
+          <select
+            bind:value={formData.calendarId}
+            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            {#each calendars.calendars as calendar}
+              <option value={calendar.id}>● {calendar.name}</option>
+            {/each}
+          </select>
         </div>
 
         <!-- Category -->

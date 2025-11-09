@@ -1,13 +1,16 @@
 <script>
   import { format } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { isWeekend, isWithinWorkingHours, formatDateByPattern } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
+  import { isRecurringEvent } from '../utils/recurringEvents.js'
 
   let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
   const store = calendarStore
+  const calendars = calendarsStore
   const settings = settingsStore
 
   $effect(() => {
@@ -15,9 +18,9 @@
     store.events
   })
 
-  function getCategoryColor(categoryId) {
-    const category = CATEGORIES.find(c => c.id === categoryId)
-    return category?.color || '#6b7280'
+  function getEventColor(event) {
+    const calendar = calendars.getCalendar(event.calendarId)
+    return calendar?.color || '#6b7280'
   }
 
   function getEventPosition(event) {
@@ -73,7 +76,8 @@
       <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">All Day</div>
       <div class="space-y-2">
         {#each getAllDayEvents() as event}
-          {@const color = getCategoryColor(event.category)}
+          {@const color = getEventColor(event)}
+          {@const isRecurring = isRecurringEvent(event)}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -87,7 +91,12 @@
             style={`background-color: ${color}20; color: ${color}; border-left: 4px solid ${color}`}
             title={event.title}
           >
-            <div class="font-bold">{event.title}</div>
+            <div class="font-bold flex items-center gap-1">
+              {#if isRecurring}
+                <span class="text-xs">↻</span>
+              {/if}
+              <span>{event.title}</span>
+            </div>
             {#if event.location}
               <div class="text-xs opacity-75 mt-1 flex items-center gap-1">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,8 +131,9 @@
 
       <!-- Events overlay (timed events only) -->
       {#each getTimedEvents() as event}
-        {@const color = getCategoryColor(event.category)}
+        {@const color = getEventColor(event)}
         {@const position = getEventPosition(event)}
+        {@const isRecurring = isRecurringEvent(event)}
         <button
           onclick={(e) => {
             e.stopPropagation()
@@ -144,7 +154,12 @@
             min-height: ${position.height};
           `}
         >
-          <div class="font-bold text-base">{event.title}</div>
+          <div class="font-bold text-base flex items-center gap-1">
+            {#if isRecurring}
+              <span class="text-xs">↻</span>
+            {/if}
+            <span>{event.title}</span>
+          </div>
           <div class="text-xs opacity-75 mt-1">
             {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
           </div>

@@ -1,13 +1,16 @@
 <script>
   import { format, isToday } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { getWeekDays, isWeekend, isWithinWorkingHours } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
+  import { isRecurringEvent } from '../utils/recurringEvents.js'
 
   let { onEventClick, onTimeSlotClick, onContextMenu } = $props()
 
   const store = calendarStore
+  const calendars = calendarsStore
   const settings = settingsStore
 
   $effect(() => {
@@ -15,9 +18,9 @@
     store.events
   })
 
-  function getCategoryColor(categoryId) {
-    const category = CATEGORIES.find(c => c.id === categoryId)
-    return category?.color || '#6b7280'
+  function getEventColor(event) {
+    const calendar = calendars.getCalendar(event.calendarId)
+    return calendar?.color || '#6b7280'
   }
 
   function getEventPosition(event) {
@@ -95,7 +98,8 @@
       {@const allDayEvents = getAllDayEvents(day)}
       <div class="border-r border-gray-200 dark:border-gray-700 last:border-r-0 p-1 space-y-1">
         {#each allDayEvents as event}
-          {@const color = getCategoryColor(event.category)}
+          {@const color = getEventColor(event)}
+          {@const isRecurring = isRecurringEvent(event)}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -105,11 +109,14 @@
               e.stopPropagation()
               onContextMenu(e, event)
             }}
-            class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-pointer"
+            class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1"
             style={`background-color: ${color}20; color: ${color}; border-left: 3px solid ${color}`}
             title={event.title}
           >
-            {event.title}
+            {#if isRecurring}
+              <span class="text-[10px]">↻</span>
+            {/if}
+            <span class="flex-1 truncate">{event.title}</span>
           </button>
         {/each}
       </div>
@@ -139,8 +146,9 @@
       {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day, dayIndex}
         {@const timedEvents = getTimedEvents(day)}
         {#each timedEvents as event}
-          {@const color = getCategoryColor(event.category)}
+          {@const color = getEventColor(event)}
           {@const position = getEventPosition(event)}
+          {@const isRecurring = isRecurringEvent(event)}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -150,7 +158,7 @@
               e.stopPropagation()
               onContextMenu(e, event)
             }}
-            class="absolute px-2 py-1 rounded text-xs font-medium truncate hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
+            class="absolute px-2 py-1 rounded text-xs font-medium hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
             style={`
               background-color: ${color}20;
               color: ${color};
@@ -162,7 +170,12 @@
             `}
             title={event.title}
           >
-            <div class="font-semibold">{event.title}</div>
+            <div class="font-semibold flex items-center gap-1">
+              {#if isRecurring}
+                <span class="text-[10px]">↻</span>
+              {/if}
+              <span class="truncate">{event.title}</span>
+            </div>
             <div class="text-[10px] opacity-75">
               {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
             </div>

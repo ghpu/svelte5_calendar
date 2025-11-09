@@ -1,13 +1,16 @@
 <script>
   import { format, isSameMonth, isToday, isSameDay, startOfDay, endOfDay, isWithinInterval, addDays, differenceInDays, getWeek } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { getMonthDays, createDateTimeString, getTimeFromDateTime } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
+  import { isRecurringEvent } from '../utils/recurringEvents.js'
 
   let { onEventClick, onDateClick, onContextMenu } = $props()
 
   const store = calendarStore
+  const calendars = calendarsStore
   const settings = settingsStore
 
   function getWeekDayHeaders() {
@@ -25,30 +28,21 @@
     const dayStart = startOfDay(day)
     const dayEnd = endOfDay(day)
 
-    return store.filteredEvents
-      .filter(event => {
-        const eventStart = startOfDay(new Date(event.startDate))
-        const eventEnd = startOfDay(new Date(event.endDate))
+    return store.getEventsForDate(day).map(event => {
+      const eventStart = startOfDay(new Date(event.startDate))
+      const eventEnd = startOfDay(new Date(event.endDate))
+      const isFirst = isSameDay(dayStart, eventStart)
+      const isLast = isSameDay(dayStart, eventEnd)
+      const isMultiDay = differenceInDays(eventEnd, eventStart) > 0
 
-        return isWithinInterval(dayStart, { start: eventStart, end: eventEnd }) ||
-               isSameDay(dayStart, eventStart) ||
-               isSameDay(dayStart, eventEnd)
-      })
-      .map(event => {
-        const eventStart = startOfDay(new Date(event.startDate))
-        const eventEnd = startOfDay(new Date(event.endDate))
-        const isFirst = isSameDay(dayStart, eventStart)
-        const isLast = isSameDay(dayStart, eventEnd)
-        const isMultiDay = differenceInDays(eventEnd, eventStart) > 0
-
-        return {
-          ...event,
-          isFirst,
-          isLast,
-          isMultiDay,
-          isContinuation: !isFirst && !isLast
-        }
-      })
+      return {
+        ...event,
+        isFirst,
+        isLast,
+        isMultiDay,
+        isContinuation: !isFirst && !isLast
+      }
+    })
   }
 
   $effect(() => {
@@ -56,9 +50,9 @@
     store.events // track changes
   })
 
-  function getCategoryColor(categoryId) {
-    const category = CATEGORIES.find(c => c.id === categoryId)
-    return category?.color || '#6b7280'
+  function getEventColor(event) {
+    const calendar = calendars.getCalendar(event.calendarId)
+    return calendar?.color || '#6b7280'
   }
 
   function handleDragStart(event, e) {
@@ -162,8 +156,9 @@
 
         <div class="space-y-1">
           {#each dayEvents.slice(0, 3) as eventInfo}
-            {@const color = getCategoryColor(eventInfo.category)}
+            {@const color = getEventColor(eventInfo)}
             {@const showTime = !eventInfo.isAllDay && eventInfo.isFirst}
+            {@const isRecurring = isRecurringEvent(eventInfo)}
             <button
               draggable="true"
               ondragstart={(e) => handleDragStart(eventInfo, e)}
@@ -181,6 +176,9 @@
             >
               {#if !eventInfo.isFirst}
                 <span class="text-[10px] opacity-60">←</span>
+              {/if}
+              {#if isRecurring}
+                <span class="text-[10px] opacity-75">↻</span>
               {/if}
               {#if showTime}
                 <span class="opacity-75">{format(new Date(eventInfo.startDate), 'h:mm a')}</span>

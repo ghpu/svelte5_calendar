@@ -1,5 +1,6 @@
 <script>
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { CATEGORIES, TIMEZONES, KEYBOARD_SHORTCUTS } from '../utils/constants.js'
   import { format, startOfMonth, addMonths, subMonths, isSameMonth, isToday, isSameDay } from 'date-fns'
@@ -8,6 +9,7 @@
   let { onImport } = $props()
 
   const store = calendarStore
+  const calendars = calendarsStore
   const settings = settingsStore
   let showShortcuts = $state(false)
   let fileInput
@@ -122,6 +124,27 @@
             <div class="absolute bottom-0.5 w-1 h-1 bg-blue-500 rounded-full"></div>
           {/if}
         </button>
+      {/each}
+    </div>
+  </div>
+
+  <!-- Calendars -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Calendars</h3>
+    <div class="space-y-2">
+      {#each calendars.calendars as calendar}
+        <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors">
+          <input
+            type="checkbox"
+            checked={calendar.visible}
+            onchange={() => calendars.toggleCalendar(calendar.id)}
+            class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500"
+          />
+          <div class="flex items-center gap-2 flex-1">
+            <div class="w-3 h-3 rounded-full" style={`background-color: ${calendar.color}`}></div>
+            <span class="text-sm text-gray-700 dark:text-gray-300">{calendar.name}</span>
+          </div>
+        </label>
       {/each}
     </div>
   </div>

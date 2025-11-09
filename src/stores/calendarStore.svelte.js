@@ -12,9 +12,13 @@ import {
   subDays,
   isSameDay,
   parseISO,
-  formatISO
+  formatISO,
+  startOfDay,
+  endOfDay
 } from 'date-fns'
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
+import { getAllEventInstancesInRange, isRecurringEvent } from '../utils/recurringEvents.js'
+import { calendarsStore } from './calendarsStore.svelte.js'
 
 // Event store with Svelte 5 runes
 class CalendarStore {
@@ -65,14 +69,20 @@ class CalendarStore {
     this.currentDate = new Date()
   }
 
+  setCurrentDate(date) {
+    this.currentDate = date
+  }
+
   setView(view) {
     this.view = view
   }
 
   // Event management
   addEvent(event) {
+    const defaultCalendar = calendarsStore.getDefaultCalendar()
     const newEvent = {
       id: crypto.randomUUID(),
+      calendarId: defaultCalendar.id,
       ...event,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
@@ -125,34 +135,13 @@ class CalendarStore {
   }
 
   getEventsForDate(date) {
-    return this.events.filter(event => {
-      if (event.recurrence) {
-        return this.isRecurringEventOnDate(event, date)
-      }
-      return isSameDay(parseISO(event.startDate), date)
-    })
-  }
+    const dateStart = startOfDay(date)
+    const dateEnd = endOfDay(date)
 
-  isRecurringEventOnDate(event, date) {
-    const startDate = parseISO(event.startDate)
-    const eventDate = new Date(date)
+    // Get all instances for the date range
+    const instances = getAllEventInstancesInRange(this.filteredEvents, dateStart, dateEnd)
 
-    if (eventDate < startDate) return false
-    if (event.recurrence.endDate && eventDate > parseISO(event.recurrence.endDate)) return false
-
-    switch (event.recurrence.type) {
-      case 'daily':
-        return true
-      case 'weekly':
-        return eventDate.getDay() === startDate.getDay()
-      case 'monthly':
-        return eventDate.getDate() === startDate.getDate()
-      case 'yearly':
-        return eventDate.getDate() === startDate.getDate() &&
-               eventDate.getMonth() === startDate.getMonth()
-      default:
-        return false
-    }
+    return instances
   }
 
   // Modal management
@@ -182,6 +171,12 @@ class CalendarStore {
 
   get filteredEvents() {
     let filtered = this.events
+
+    // Calendar visibility filter
+    const visibleCalendarIds = calendarsStore.getVisibleCalendarIds()
+    filtered = filtered.filter(event =>
+      event.calendarId && visibleCalendarIds.includes(event.calendarId)
+    )
 
     // Search filter
     if (this.searchQuery) {
