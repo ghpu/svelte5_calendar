@@ -1,0 +1,139 @@
+import { calendarApi } from '../services/api.js'
+
+class CalendarsStore {
+  calendars = $state([])
+  loading = $state(false)
+  error = $state(null)
+
+  constructor() {
+    this.loadCalendars()
+  }
+
+  async loadCalendars() {
+    try {
+      this.loading = true
+      this.error = null
+      const calendars = await calendarApi.getAll()
+      this.calendars = calendars.map(cal => ({
+        id: cal.id,
+        name: cal.name,
+        color: cal.color,
+        visible: cal.visible,
+        isDefault: cal.is_default,
+        createdAt: cal.created_at,
+        updatedAt: cal.updated_at
+      }))
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to load calendars:', err)
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async addCalendar(name, color) {
+    try {
+      this.loading = true
+      this.error = null
+
+      const calendarData = {
+        name,
+        color,
+        visible: true,
+        is_default: false
+      }
+
+      const newCalendar = await calendarApi.create(calendarData)
+
+      const calendar = {
+        id: newCalendar.id,
+        name: newCalendar.name,
+        color: newCalendar.color,
+        visible: newCalendar.visible,
+        isDefault: newCalendar.is_default,
+        createdAt: newCalendar.created_at,
+        updatedAt: newCalendar.updated_at
+      }
+
+      this.calendars.push(calendar)
+      return calendar
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to add calendar:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async updateCalendar(id, updates) {
+    try {
+      this.loading = true
+      this.error = null
+
+      const updatedCalendar = await calendarApi.update(id, updates)
+
+      const index = this.calendars.findIndex(c => c.id === id)
+      if (index !== -1) {
+        this.calendars[index] = {
+          id: updatedCalendar.id,
+          name: updatedCalendar.name,
+          color: updatedCalendar.color,
+          visible: updatedCalendar.visible,
+          isDefault: updatedCalendar.is_default,
+          updatedAt: updatedCalendar.updated_at
+        }
+      }
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to update calendar:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async deleteCalendar(id) {
+    try {
+      const calendar = this.calendars.find(c => c.id === id)
+      if (calendar && !calendar.isDefault) {
+        this.loading = true
+        this.error = null
+
+        await calendarApi.delete(id)
+        this.calendars = this.calendars.filter(c => c.id !== id)
+        return true
+      }
+      return false
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to delete calendar:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async toggleCalendar(id) {
+    const calendar = this.calendars.find(c => c.id === id)
+    if (calendar) {
+      calendar.visible = !calendar.visible
+      // Update on server
+      await this.updateCalendar(id, { visible: calendar.visible })
+    }
+  }
+
+  getVisibleCalendarIds() {
+    return this.calendars.filter(c => c.visible).map(c => c.id)
+  }
+
+  getCalendar(id) {
+    return this.calendars.find(c => c.id === id)
+  }
+
+  getDefaultCalendar() {
+    return this.calendars.find(c => c.isDefault) || this.calendars[0]
+  }
+}
+
+export const calendarsStore = new CalendarsStore()

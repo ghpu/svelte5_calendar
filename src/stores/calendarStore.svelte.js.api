@@ -1,0 +1,354 @@
+import {
+  addMonths,
+  subMonths,
+  addWeeks,
+  subWeeks,
+  addDays,
+  subDays,
+  startOfDay,
+  endOfDay
+} from 'date-fns'
+import { getAllEventInstancesInRange } from '../utils/recurringEvents.js'
+import { calendarsStore } from './calendarsStore.svelte.js'
+import { eventApi } from '../services/api.js'
+
+// Event store with Svelte 5 runes - API version
+class CalendarStore {
+  currentDate = $state(new Date())
+  view = $state('month') // 'month', 'week', 'day'
+  events = $state([])
+  selectedEvent = $state(null)
+  showEventModal = $state(false)
+  searchQuery = $state('')
+  selectedCategories = $state([])
+  timezone = $state(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  loading = $state(false)
+  error = $state(null)
+
+  constructor() {
+    // Load events from API
+    this.loadEvents()
+  }
+
+  // API Operations
+  async loadEvents() {
+    try {
+      this.loading = true
+      this.error = null
+      const events = await eventApi.getAll()
+      this.events = events.map(event => ({
+        ...event,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        calendarId: event.calendar_id,
+        isAllDay: event.is_all_day,
+        isException: event.is_exception,
+        isDeleted: event.is_deleted,
+        originalEventId: event.original_event_id,
+        exceptionDate: event.exception_date,
+        createdAt: event.created_at,
+        updatedAt: event.updated_at
+      }))
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to load events:', err)
+    } finally {
+      this.loading = false
+    }
+  }
+
+  // Navigation
+  nextPeriod() {
+    switch (this.view) {
+      case 'month':
+        this.currentDate = addMonths(this.currentDate, 1)
+        break
+      case 'week':
+        this.currentDate = addWeeks(this.currentDate, 1)
+        break
+      case 'day':
+        this.currentDate = addDays(this.currentDate, 1)
+        break
+    }
+  }
+
+  prevPeriod() {
+    switch (this.view) {
+      case 'month':
+        this.currentDate = subMonths(this.currentDate, 1)
+        break
+      case 'week':
+        this.currentDate = subWeeks(this.currentDate, 1)
+        break
+      case 'day':
+        this.currentDate = subDays(this.currentDate, 1)
+        break
+    }
+  }
+
+  goToToday() {
+    this.currentDate = new Date()
+  }
+
+  setCurrentDate(date) {
+    this.currentDate = date
+  }
+
+  setView(view) {
+    this.view = view
+  }
+
+  // Event management
+  async addEvent(event) {
+    try {
+      this.loading = true
+      this.error = null
+
+      const eventData = {
+        title: event.title,
+        description: event.description || '',
+        start_date: event.startDate,
+        end_date: event.endDate,
+        location: event.location || '',
+        calendar_id: event.calendarId || calendarsStore.getDefaultCalendar().id,
+        category: event.category,
+        status: event.status || 'confirmed',
+        priority: event.priority || 'medium',
+        is_all_day: event.isAllDay || false,
+        reminder: event.reminder || 'none',
+        attendees: event.attendees || [],
+        recurrence: event.recurrence || null
+      }
+
+      const createdEvent = await eventApi.create(eventData)
+
+      // Convert back to frontend format
+      const newEvent = {
+        ...createdEvent,
+        startDate: createdEvent.start_date,
+        endDate: createdEvent.end_date,
+        calendarId: createdEvent.calendar_id,
+        isAllDay: createdEvent.is_all_day,
+        createdAt: createdEvent.created_at,
+        updatedAt: createdEvent.updated_at
+      }
+
+      this.events.push(newEvent)
+      return newEvent
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to add event:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async updateEvent(id, updates) {
+    try {
+      this.loading = true
+      this.error = null
+
+      // Convert to API format
+      const updateData = {}
+      if (updates.title !== undefined) updateData.title = updates.title
+      if (updates.description !== undefined) updateData.description = updates.description
+      if (updates.startDate !== undefined) updateData.start_date = updates.startDate
+      if (updates.endDate !== undefined) updateData.end_date = updates.endDate
+      if (updates.location !== undefined) updateData.location = updates.location
+      if (updates.calendarId !== undefined) updateData.calendar_id = updates.calendarId
+      if (updates.category !== undefined) updateData.category = updates.category
+      if (updates.status !== undefined) updateData.status = updates.status
+      if (updates.priority !== undefined) updateData.priority = updates.priority
+      if (updates.isAllDay !== undefined) updateData.is_all_day = updates.isAllDay
+      if (updates.reminder !== undefined) updateData.reminder = updates.reminder
+      if (updates.attendees !== undefined) updateData.attendees = updates.attendees
+      if (updates.recurrence !== undefined) updateData.recurrence = updates.recurrence
+
+      const updatedEvent = await eventApi.update(id, updateData)
+
+      // Update local state
+      const index = this.events.findIndex(e => e.id === id)
+      if (index !== -1) {
+        this.events[index] = {
+          ...updatedEvent,
+          startDate: updatedEvent.start_date,
+          endDate: updatedEvent.end_date,
+          calendarId: updatedEvent.calendar_id,
+          isAllDay: updatedEvent.is_all_day,
+          updatedAt: updatedEvent.updated_at
+        }
+      }
+
+      return this.events[index]
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to update event:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  async deleteEvent(id) {
+    try {
+      this.loading = true
+      this.error = null
+      await eventApi.delete(id)
+      this.events = this.events.filter(e => e.id !== id)
+    } catch (err) {
+      this.error = err.message
+      console.error('Failed to delete event:', err)
+      throw err
+    } finally {
+      this.loading = false
+    }
+  }
+
+  // Recurring event methods
+  isRecurringInstance(event) {
+    return event && event.isRecurring && event.recurringParentId
+  }
+
+  getParentEvent(instanceId) {
+    const parentId = instanceId.split('_')[0]
+    return this.events.find(e => e.id === parentId)
+  }
+
+  editRecurringSeries(instanceId, updates) {
+    const parentId = instanceId.split('_')[0]
+    return this.updateEvent(parentId, updates)
+  }
+
+  async editRecurringInstance(instance, updates) {
+    // Create an exception event for this specific occurrence
+    const exceptionEvent = {
+      ...updates,
+      isException: true,
+      originalEventId: instance.recurringParentId,
+      exceptionDate: instance.instanceDate
+    }
+    return this.addEvent(exceptionEvent)
+  }
+
+  deleteRecurringSeries(instanceId) {
+    const parentId = instanceId.split('_')[0]
+    return this.deleteEvent(parentId)
+  }
+
+  async deleteRecurringInstance(instance) {
+    // Create a deletion exception
+    const deletionException = {
+      title: 'Deleted',
+      startDate: instance.startDate,
+      endDate: instance.endDate,
+      calendarId: instance.calendarId,
+      category: instance.category,
+      isDeleted: true,
+      originalEventId: instance.recurringParentId,
+      exceptionDate: instance.instanceDate
+    }
+    return this.addEvent(deletionException)
+  }
+
+  duplicateEvent(event) {
+    const duplicate = {
+      ...event,
+      title: `${event.title} (Copy)`,
+      startDate: event.startDate,
+      endDate: event.endDate
+    }
+    delete duplicate.id
+    delete duplicate.createdAt
+    delete duplicate.updatedAt
+    return this.addEvent(duplicate)
+  }
+
+  // Filtering
+  get filteredEvents() {
+    let filtered = this.events
+
+    // Calendar visibility filter
+    const visibleCalendarIds = calendarsStore.getVisibleCalendarIds()
+    const defaultCalendarId = calendarsStore.getDefaultCalendar().id
+    filtered = filtered.filter(event => {
+      const calendarId = event.calendarId || defaultCalendarId
+      return visibleCalendarIds.includes(calendarId)
+    })
+
+    // Category filter
+    if (this.selectedCategories.length > 0) {
+      filtered = filtered.filter(event =>
+        this.selectedCategories.includes(event.category)
+      )
+    }
+
+    // Search filter
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase()
+      filtered = filtered.filter(event =>
+        event.title.toLowerCase().includes(query) ||
+        event.description?.toLowerCase().includes(query) ||
+        event.location?.toLowerCase().includes(query)
+      )
+    }
+
+    return filtered
+  }
+
+  toggleCategory(categoryId) {
+    if (this.selectedCategories.includes(categoryId)) {
+      this.selectedCategories = this.selectedCategories.filter(id => id !== categoryId)
+    } else {
+      this.selectedCategories.push(categoryId)
+    }
+  }
+
+  setSearchQuery(query) {
+    this.searchQuery = query
+  }
+
+  // Event modal
+  openEventModal(event = null) {
+    this.selectedEvent = event
+    this.showEventModal = true
+  }
+
+  closeEventModal() {
+    this.selectedEvent = null
+    this.showEventModal = false
+  }
+
+  // Get events for a specific date (includes recurring instances)
+  getEventsForDate(date) {
+    const dateStart = startOfDay(date)
+    const dateEnd = endOfDay(date)
+    return getAllEventInstancesInRange(this.filteredEvents, dateStart, dateEnd)
+  }
+
+  // Import/Export
+  exportToJSON() {
+    const data = JSON.stringify(this.events, null, 2)
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `calendar-events-${new Date().toISOString()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async importFromJSON(jsonData) {
+    try {
+      const importedEvents = JSON.parse(jsonData)
+      for (const event of importedEvents) {
+        await this.addEvent(event)
+      }
+    } catch (error) {
+      console.error('Failed to import events:', error)
+      throw new Error('Invalid JSON data')
+    }
+  }
+}
+
+export const calendarStore = new CalendarStore()
