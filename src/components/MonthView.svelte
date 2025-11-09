@@ -1,16 +1,60 @@
 <script>
-  import { format, isSameMonth, isToday } from 'date-fns'
+  import { format, isSameMonth, isToday, isSameDay, startOfDay, endOfDay, isWithinInterval, addDays, differenceInDays, getWeek } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { getMonthDays, createDateTimeString, getTimeFromDateTime } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
+  import { settingsStore } from '../stores/settingsStore.svelte.js'
 
   let { onEventClick, onDateClick, onContextMenu } = $props()
 
   const store = calendarStore
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const settings = settingsStore
+
+  function getWeekDayHeaders() {
+    const allDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const startDay = settings.firstDayOfWeek
+    return [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+  }
 
   let draggedEvent = $state(null)
   let dragOverDate = $state(null)
+  let monthDays = $state([])
+
+  // Get events for a specific day with multi-day info
+  function getEventsForDay(day) {
+    const dayStart = startOfDay(day)
+    const dayEnd = endOfDay(day)
+
+    return store.filteredEvents
+      .filter(event => {
+        const eventStart = startOfDay(new Date(event.startDate))
+        const eventEnd = startOfDay(new Date(event.endDate))
+
+        return isWithinInterval(dayStart, { start: eventStart, end: eventEnd }) ||
+               isSameDay(dayStart, eventStart) ||
+               isSameDay(dayStart, eventEnd)
+      })
+      .map(event => {
+        const eventStart = startOfDay(new Date(event.startDate))
+        const eventEnd = startOfDay(new Date(event.endDate))
+        const isFirst = isSameDay(dayStart, eventStart)
+        const isLast = isSameDay(dayStart, eventEnd)
+        const isMultiDay = differenceInDays(eventEnd, eventStart) > 0
+
+        return {
+          ...event,
+          isFirst,
+          isLast,
+          isMultiDay,
+          isContinuation: !isFirst && !isLast
+        }
+      })
+  }
+
+  $effect(() => {
+    monthDays = getMonthDays(store.currentDate, settings.firstDayOfWeek)
+    store.events // track changes
+  })
 
   function getCategoryColor(categoryId) {
     const category = CATEGORIES.find(c => c.id === categoryId)
@@ -65,8 +109,13 @@
 
 <div class="flex flex-col h-full bg-white dark:bg-gray-800">
   <!-- Week day headers -->
-  <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
-    {#each weekDays as day}
+  <div class="grid {settings.showWeekNumbers ? 'grid-cols-[40px_repeat(7,1fr)]' : 'grid-cols-7'} border-b border-gray-200 dark:border-gray-700">
+    {#if settings.showWeekNumbers}
+      <div class="py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+        Wk
+      </div>
+    {/if}
+    {#each getWeekDayHeaders() as day}
       <div class="py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 last:border-r-0">
         {day}
       </div>
@@ -74,11 +123,19 @@
   </div>
 
   <!-- Calendar grid -->
-  <div class="grid grid-cols-7 flex-1 border-l border-gray-200 dark:border-gray-700">
-    {#each getMonthDays(store.currentDate) as day}
-      {@const dayEvents = store.getEventsForDate(day)}
+  <div class="grid {settings.showWeekNumbers ? 'grid-cols-[40px_repeat(7,1fr)]' : 'grid-cols-7'} flex-1 border-l border-gray-200 dark:border-gray-700">
+    {#each monthDays as day, index}
+      {@const dayEvents = getEventsForDay(day)}
       {@const isCurrentMonth = isSameMonth(day, store.currentDate)}
       {@const isTodayDate = isToday(day)}
+
+      {#if settings.showWeekNumbers && index % 7 === 0}
+        <div class="flex items-center justify-center border-r border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+          <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
+            {getWeek(day, { weekStartsOn: settings.firstDayOfWeek })}
+          </span>
+        </div>
+      {/if}
 
       <div
         class="min-h-[120px] border-r border-b border-gray-200 dark:border-gray-700 p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors {!isCurrentMonth ? 'bg-gray-50/50 dark:bg-gray-900/50' : ''} {dragOverDate && isSameMonth(dragOverDate, day) && format(dragOverDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') ? 'bg-blue-100 dark:bg-blue-900/30' : ''}"
@@ -104,24 +161,34 @@
         </div>
 
         <div class="space-y-1">
-          {#each dayEvents.slice(0, 3) as event}
-            {@const color = getCategoryColor(event.category)}
+          {#each dayEvents.slice(0, 3) as eventInfo}
+            {@const color = getCategoryColor(eventInfo.category)}
+            {@const showTime = !eventInfo.isAllDay && eventInfo.isFirst}
             <button
               draggable="true"
-              ondragstart={(e) => handleDragStart(event, e)}
+              ondragstart={(e) => handleDragStart(eventInfo, e)}
               onclick={(e) => {
                 e.stopPropagation()
-                onEventClick(event)
+                onEventClick(eventInfo)
               }}
               oncontextmenu={(e) => {
                 e.stopPropagation()
-                onContextMenu(e, event)
+                onContextMenu(e, eventInfo)
               }}
-              class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-move"
+              class="w-full text-left px-2 py-1 text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-move flex items-center gap-1 {eventInfo.isMultiDay ? (eventInfo.isFirst ? 'rounded-l' : eventInfo.isLast ? 'rounded-r' : 'rounded-none') : 'rounded'}"
               style={`background-color: ${color}20; color: ${color}; border-left: 3px solid ${color}`}
-              title={event.title}
+              title={eventInfo.title}
             >
-              {format(new Date(event.startDate), 'h:mm a')} {event.title}
+              {#if !eventInfo.isFirst}
+                <span class="text-[10px] opacity-60">←</span>
+              {/if}
+              {#if showTime}
+                <span class="opacity-75">{format(new Date(eventInfo.startDate), 'h:mm a')}</span>
+              {/if}
+              <span class="flex-1 truncate">{eventInfo.title}</span>
+              {#if eventInfo.isMultiDay && !eventInfo.isLast}
+                <span class="text-[10px] opacity-60">→</span>
+              {/if}
             </button>
           {/each}
 

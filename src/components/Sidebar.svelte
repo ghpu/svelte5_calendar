@@ -1,13 +1,35 @@
 <script>
   import { calendarStore } from '../stores/calendarStore.svelte.js'
+  import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { CATEGORIES, TIMEZONES, KEYBOARD_SHORTCUTS } from '../utils/constants.js'
-  import { format } from 'date-fns'
+  import { format, startOfMonth, addMonths, subMonths, isSameMonth, isToday, isSameDay } from 'date-fns'
+  import { getMonthDays } from '../utils/dateUtils.js'
 
   let { onImport } = $props()
 
   const store = calendarStore
+  const settings = settingsStore
   let showShortcuts = $state(false)
   let fileInput
+  let miniCalendarDate = $state(new Date())
+
+  function goToPreviousMonth() {
+    miniCalendarDate = subMonths(miniCalendarDate, 1)
+  }
+
+  function goToNextMonth() {
+    miniCalendarDate = addMonths(miniCalendarDate, 1)
+  }
+
+  function selectDate(date) {
+    store.setCurrentDate(date)
+  }
+
+  function getMiniCalendarWeekDays() {
+    const allDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+    const startDay = settings.firstDayOfWeek
+    return [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+  }
 
   function handleImportClick() {
     fileInput.click()
@@ -53,11 +75,54 @@
 
   <!-- Mini calendar -->
   <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-    <div class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-      {format(store.currentDate, 'MMMM yyyy')}
+    <!-- Month navigation -->
+    <div class="flex items-center justify-between mb-3">
+      <button
+        onclick={goToPreviousMonth}
+        class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+      >
+        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        {format(miniCalendarDate, 'MMM yyyy')}
+      </div>
+      <button
+        onclick={goToNextMonth}
+        class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+      >
+        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
-    <div class="text-xs text-gray-500 dark:text-gray-400">
-      Quick navigation for current period
+
+    <!-- Calendar grid -->
+    <div class="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <!-- Week day headers -->
+      {#each getMiniCalendarWeekDays() as day}
+        <div class="bg-white dark:bg-gray-800 text-center py-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+          {day}
+        </div>
+      {/each}
+
+      <!-- Calendar days -->
+      {#each getMonthDays(miniCalendarDate, settings.firstDayOfWeek) as day}
+        {@const isCurrentMonth = isSameMonth(day, miniCalendarDate)}
+        {@const isTodayDate = isToday(day)}
+        {@const isSelected = isSameDay(day, store.currentDate)}
+        {@const hasEvents = store.getEventsForDate(day).length > 0}
+        <button
+          onclick={() => selectDate(day)}
+          class="bg-white dark:bg-gray-800 aspect-square text-xs flex items-center justify-center transition-colors relative {!isCurrentMonth ? 'text-gray-400 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'} {isTodayDate ? 'font-bold' : ''} {isSelected ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}"
+        >
+          {format(day, 'd')}
+          {#if hasEvents && !isSelected}
+            <div class="absolute bottom-0.5 w-1 h-1 bg-blue-500 rounded-full"></div>
+          {/if}
+        </button>
+      {/each}
     </div>
   </div>
 

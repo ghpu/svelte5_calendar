@@ -24,11 +24,17 @@
     const start = new Date(event.startDate)
     const end = new Date(event.endDate)
     const startHour = start.getHours() + start.getMinutes() / 60
-    const duration = (end - start) / (1000 * 60 * 60)
+    const endHour = end.getHours() + end.getMinutes() / 60
 
+    // Calculate position relative to visible hour range
+    const visibleHours = settings.hourRangeEnd - settings.hourRangeStart
+    const relativeStart = startHour - settings.hourRangeStart
+    const duration = endHour - startHour
+
+    // Each hour slot is 60px
     return {
-      top: `${(startHour / 24) * 100}%`,
-      height: `${(duration / 24) * 100}%`
+      top: `${relativeStart * 60}px`,
+      height: `${Math.max(duration * 60, 30)}px` // Minimum 30px height
     }
   }
 
@@ -47,6 +53,14 @@
   function isWorkingHour(hour) {
     return settings.highlightWorkingHours &&
            isWithinWorkingHours(hour, settings.workingHoursStart, settings.workingHoursEnd)
+  }
+
+  function getAllDayEvents(day) {
+    return store.getEventsForDate(day).filter(event => event.isAllDay)
+  }
+
+  function getTimedEvents(day) {
+    return store.getEventsForDate(day).filter(event => !event.isAllDay)
   }
 </script>
 
@@ -72,6 +86,36 @@
     {/each}
   </div>
 
+  <!-- All-day events row -->
+  <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 min-h-[40px]">
+    <div class="py-2 px-2 text-xs text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+      All Day
+    </div>
+    {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day}
+      {@const allDayEvents = getAllDayEvents(day)}
+      <div class="border-r border-gray-200 dark:border-gray-700 last:border-r-0 p-1 space-y-1">
+        {#each allDayEvents as event}
+          {@const color = getCategoryColor(event.category)}
+          <button
+            onclick={(e) => {
+              e.stopPropagation()
+              onEventClick(event)
+            }}
+            oncontextmenu={(e) => {
+              e.stopPropagation()
+              onContextMenu(e, event)
+            }}
+            class="w-full text-left px-2 py-1 rounded text-xs font-medium truncate hover:opacity-80 transition-opacity cursor-pointer"
+            style={`background-color: ${color}20; color: ${color}; border-left: 3px solid ${color}`}
+            title={event.title}
+          >
+            {event.title}
+          </button>
+        {/each}
+      </div>
+    {/each}
+  </div>
+
   <!-- Time grid -->
   <div class="flex-1 overflow-y-auto">
     <div class="relative">
@@ -91,10 +135,10 @@
         </div>
       {/each}
 
-      <!-- Events overlay -->
+      <!-- Events overlay (timed events only) -->
       {#each getWeekDays(store.currentDate, settings.firstDayOfWeek) as day, dayIndex}
-        {@const dayEvents = store.getEventsForDate(day)}
-        {#each dayEvents as event}
+        {@const timedEvents = getTimedEvents(day)}
+        {#each timedEvents as event}
           {@const color = getCategoryColor(event.category)}
           {@const position = getEventPosition(event)}
           <button
