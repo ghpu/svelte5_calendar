@@ -75,9 +75,14 @@ export function getVisibleHours(hourStart = 0, hourEnd = 24) {
 
 export function createDateTimeString(date, time) {
   const [hours, minutes] = time.split(':')
-  const dateObj = new Date(date)
-  dateObj.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-  return dateObj.toISOString()
+  // Parse date as local (YYYY-MM-DD format)
+  const [year, month, day] = date.split('-').map(Number)
+  // Create date in local timezone (month is 0-indexed)
+  const dateObj = new Date(year, month - 1, day, parseInt(hours), parseInt(minutes), 0, 0)
+  // Return ISO string in local time (not UTC)
+  // Format: YYYY-MM-DDTHH:mm:ss
+  const pad = (num) => String(num).padStart(2, '0')
+  return `${year}-${pad(month)}-${pad(day)}T${pad(dateObj.getHours())}:${pad(dateObj.getMinutes())}:00`
 }
 
 export function getDateFromDateTime(dateTime) {
