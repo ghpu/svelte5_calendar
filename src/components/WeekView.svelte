@@ -205,8 +205,8 @@
               background-color: ${color}20;
               color: ${color};
               border-left: 3px solid ${color};
-              left: calc(60px + ${dayIndex} * ((100% - 60px) / 7) + ${event.leftPercent}% * ((100% - 60px) / 7) / 100);
-              width: calc(${event.widthPercent}% * ((100% - 60px) / 7) / 100 - 4px);
+              left: calc(60px + (100% - 60px) * ${dayIndex} / 7 + (100% - 60px) * ${event.leftPercent} / 700);
+              width: calc((100% - 60px) * ${event.widthPercent} / 700 - 4px);
               top: ${position.top};
               min-height: ${position.height};
             `}
