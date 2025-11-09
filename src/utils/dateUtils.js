@@ -10,18 +10,20 @@ import {
   isToday,
   addDays,
   startOfDay,
-  endOfDay
+  endOfDay,
+  differenceInDays,
+  differenceInMinutes
 } from 'date-fns'
 
-export function getMonthDays(date) {
-  const start = startOfWeek(startOfMonth(date))
-  const end = endOfWeek(endOfMonth(date))
+export function getMonthDays(date, weekStartsOn = 0) {
+  const start = startOfWeek(startOfMonth(date), { weekStartsOn })
+  const end = endOfWeek(endOfMonth(date), { weekStartsOn })
   return eachDayOfInterval({ start, end })
 }
 
-export function getWeekDays(date) {
-  const start = startOfWeek(date)
-  const end = endOfWeek(date)
+export function getWeekDays(date, weekStartsOn = 0) {
+  const start = startOfWeek(date, { weekStartsOn })
+  const end = endOfWeek(date, { weekStartsOn })
   return eachDayOfInterval({ start, end })
 }
 
@@ -29,27 +31,46 @@ export function formatDate(date, formatString = 'PPP') {
   return format(date, formatString)
 }
 
-export function formatTime(date) {
-  return format(date, 'h:mm a')
+export function formatTime(date, use24Hour = false) {
+  return format(date, use24Hour ? 'HH:mm' : 'h:mm a')
 }
 
-export function formatDateTime(date) {
-  return format(date, 'PPP p')
+export function formatDateTime(date, use24Hour = false) {
+  return format(date, use24Hour ? 'PPP HH:mm' : 'PPP p')
 }
 
-export function getTimeSlots() {
+export function formatDateByPattern(date, pattern) {
+  // Convert custom patterns to date-fns format
+  const patternMap = {
+    'MM/DD/YYYY': 'MM/dd/yyyy',
+    'DD/MM/YYYY': 'dd/MM/yyyy',
+    'YYYY-MM-DD': 'yyyy-MM-dd'
+  }
+  const dateFormat = patternMap[pattern] || 'MM/dd/yyyy'
+  return format(date, dateFormat)
+}
+
+export function getTimeSlots(hourStart = 0, hourEnd = 24, use24Hour = false) {
   const slots = []
-  for (let hour = 0; hour < 24; hour++) {
+  for (let hour = hourStart; hour < hourEnd; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       const time = new Date()
       time.setHours(hour, minute, 0, 0)
       slots.push({
         value: `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-        label: format(time, 'h:mm a')
+        label: format(time, use24Hour ? 'HH:mm' : 'h:mm a')
       })
     }
   }
   return slots
+}
+
+export function getVisibleHours(hourStart = 0, hourEnd = 24) {
+  const hours = []
+  for (let i = hourStart; i < hourEnd; i++) {
+    hours.push(i)
+  }
+  return hours
 }
 
 export function createDateTimeString(date, time) {
@@ -77,4 +98,29 @@ export function isDateToday(date) {
 
 export function isDateSame(date1, date2) {
   return isSameDay(date1, date2)
+}
+
+export function isMultiDayEvent(startDate, endDate) {
+  const start = startOfDay(new Date(startDate))
+  const end = startOfDay(new Date(endDate))
+  return differenceInDays(end, start) > 0
+}
+
+export function getEventDuration(startDate, endDate) {
+  return differenceInMinutes(new Date(endDate), new Date(startDate))
+}
+
+export function isWeekend(date) {
+  const day = date.getDay()
+  return day === 0 || day === 6
+}
+
+export function isWithinWorkingHours(hour, workStart, workEnd) {
+  return hour >= workStart && hour < workEnd
+}
+
+export function getWeekNumber(date) {
+  const startOfYear = new Date(date.getFullYear(), 0, 1)
+  const days = differenceInDays(date, startOfYear)
+  return Math.ceil((days + startOfYear.getDay() + 1) / 7)
 }

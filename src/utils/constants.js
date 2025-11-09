@@ -51,3 +51,38 @@ export const KEYBOARD_SHORTCUTS = [
   { key: '/', description: 'Search', action: 'search' },
   { key: 'Escape', description: 'Close modal', action: 'closeModal' }
 ]
+
+export const EVENT_STATUS = [
+  { id: 'free', name: 'Free', color: '#10b981', icon: '○' },
+  { id: 'busy', name: 'Busy', color: '#ef4444', icon: '●' },
+  { id: 'tentative', name: 'Tentative', color: '#f59e0b', icon: '◐' },
+  { id: 'out-of-office', name: 'Out of Office', color: '#8b5cf6', icon: '✈' }
+]
+
+export const EVENT_PRIORITY = [
+  { id: 'low', name: 'Low', icon: '↓', color: '#6b7280' },
+  { id: 'normal', name: 'Normal', icon: '−', color: '#3b82f6' },
+  { id: 'high', name: 'High', icon: '↑', color: '#ef4444' }
+]
+
+export const THEMES = [
+  { id: 'light', name: 'Light' },
+  { id: 'dark', name: 'Dark' },
+  { id: 'high-contrast', name: 'High Contrast' }
+]
+
+export const DATE_FORMATS = [
+  { id: 'MM/DD/YYYY', name: 'MM/DD/YYYY (US)' },
+  { id: 'DD/MM/YYYY', name: 'DD/MM/YYYY (Europe)' },
+  { id: 'YYYY-MM-DD', name: 'YYYY-MM-DD (ISO)' }
+]
+
+export const TIME_FORMATS = [
+  { id: '12h', name: '12-hour (AM/PM)' },
+  { id: '24h', name: '24-hour' }
+]
+
+export const FIRST_DAY_OPTIONS = [
+  { id: 0, name: 'Sunday' },
+  { id: 1, name: 'Monday' }
+]
