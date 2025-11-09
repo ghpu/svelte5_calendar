@@ -19,9 +19,9 @@
   let cacheKey = $state('')
 
   $effect(() => {
-    // Regenerate cached instances only when day or events change
+    // Regenerate cached instances when day, events, or settings change
     const dayStart = startOfDay(store.currentDate)
-    const newKey = `${dayStart.getTime()}-${store.events.length}-${store.filteredEvents.length}`
+    const newKey = `${dayStart.getTime()}-${store.events.length}-${store.filteredEvents.length}-${settings.timeFormat}`
 
     if (cacheKey !== newKey) {
       const dayEnd = endOfDay(store.currentDate)

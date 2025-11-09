@@ -31,6 +31,9 @@ class SettingsStore {
   }
 
   // Language options
+  // NOTE: Language selection is currently for preference storage only.
+  // Full internationalization (i18n) is not yet implemented.
+  // To implement: integrate a library like svelte-i18n or typesafe-i18n
   get languages() {
     return [
       { code: 'en', name: 'English' },

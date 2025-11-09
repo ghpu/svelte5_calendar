@@ -61,8 +61,8 @@
   $effect(() => {
     monthDays = getMonthDays(store.currentDate, settings.firstDayOfWeek)
 
-    // Regenerate cached instances only when month or events change
-    const newKey = `${store.currentDate.getFullYear()}-${store.currentDate.getMonth()}-${store.events.length}-${store.filteredEvents.length}`
+    // Regenerate cached instances when month, events, or settings change
+    const newKey = `${store.currentDate.getFullYear()}-${store.currentDate.getMonth()}-${store.events.length}-${store.filteredEvents.length}-${settings.firstDayOfWeek}`
     if (cacheKey !== newKey) {
       const monthStart = startOfMonth(store.currentDate)
       const monthEnd = endOfMonth(store.currentDate)

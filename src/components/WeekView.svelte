@@ -19,9 +19,9 @@
   let cacheKey = $state('')
 
   $effect(() => {
-    // Regenerate cached instances only when week or events change
+    // Regenerate cached instances when week, events, or settings change
     const weekStart = startOfWeek(store.currentDate, { weekStartsOn: settings.firstDayOfWeek })
-    const newKey = `${weekStart.getTime()}-${store.events.length}-${store.filteredEvents.length}`
+    const newKey = `${weekStart.getTime()}-${store.events.length}-${store.filteredEvents.length}-${settings.firstDayOfWeek}-${settings.timeFormat}`
 
     if (cacheKey !== newKey) {
       const weekEnd = endOfWeek(store.currentDate, { weekStartsOn: settings.firstDayOfWeek })
