@@ -39,14 +39,6 @@
     return calendar?.color || '#6b7280'
   }
 
-  // Get localized abbreviated day name (uses reactive $_)
-  function getLocalizedDayAbbr(date) {
-    const dayIndex = date.getDay()
-    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-    const dayKeysShort = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-    return $_(`weekDays.${dayKeysShort[dayIndex]}`)
-  }
-
   function getEventPosition(event) {
     const start = new Date(event.startDate)
     const end = new Date(event.endDate)
@@ -281,6 +273,10 @@
           {@const isRecurring = isRecurringEvent(event)}
           {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
           {@const isMultiDay = isMultiDayEvent(event.startDate, event.endDate)}
+          {@const startDate = new Date(event.startDate)}
+          {@const endDate = new Date(event.endDate)}
+          {@const startDayKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][startDate.getDay()]}
+          {@const endDayKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][endDate.getDay()]}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -315,9 +311,9 @@
             </div>
             <div class="text-[10px] opacity-75">
               {#if isMultiDay}
-                {getLocalizedDayAbbr(new Date(event.startDate))} {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {getLocalizedDayAbbr(new Date(event.endDate))} {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+                {$_(`weekDays.${startDayKey}`)} {format(startDate, settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {$_(`weekDays.${endDayKey}`)} {format(endDate, settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
               {:else}
-                {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+                {format(startDate, settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(endDate, settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
               {/if}
             </div>
           </button>
