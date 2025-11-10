@@ -56,6 +56,46 @@
     }
   }
 
+  // Calculate position for multi-day events on a specific day
+  function getEventPositionForDay(event, day) {
+    const eventStart = new Date(event.startDate)
+    const eventEnd = new Date(event.endDate)
+    const dayStart = startOfDay(day)
+    const dayEnd = endOfDay(day)
+
+    // Determine the display time range for this specific day
+    let displayStart, displayEnd
+
+    if (eventStart < dayStart) {
+      // Event started before this day - show from midnight
+      displayStart = new Date(dayStart)
+    } else {
+      // Event starts on this day - show from actual start time
+      displayStart = eventStart
+    }
+
+    if (eventEnd > dayEnd) {
+      // Event continues after this day - show until midnight
+      displayEnd = new Date(dayEnd)
+    } else {
+      // Event ends on this day - show until actual end time
+      displayEnd = eventEnd
+    }
+
+    const startHour = displayStart.getHours() + displayStart.getMinutes() / 60
+    const endHour = displayEnd.getHours() + displayEnd.getMinutes() / 60
+
+    // Calculate position relative to visible hour range
+    const relativeStart = startHour - settings.hourRangeStart
+    const duration = endHour - startHour
+
+    // Each hour slot is 60px
+    return {
+      top: `${relativeStart * 60}px`,
+      height: `${Math.max(duration * 60, 30)}px` // Minimum 30px height
+    }
+  }
+
   function handleTimeSlotClick(day, hour) {
     const time = `${hour.toString().padStart(2, '0')}:00`
     onTimeSlotClick(day, time)
@@ -228,7 +268,7 @@
         {@const timedEvents = getTimedEvents(day)}
         {#each timedEvents as event}
           {@const color = getEventColor(event)}
-          {@const position = getEventPosition(event)}
+          {@const position = getEventPositionForDay(event, day)}
           {@const isRecurring = isRecurringEvent(event)}
           {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
           <button
