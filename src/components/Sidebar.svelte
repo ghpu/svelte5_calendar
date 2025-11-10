@@ -1,10 +1,11 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
   import { CATEGORIES, TIMEZONES, KEYBOARD_SHORTCUTS } from '../utils/constants.js'
   import { format, startOfMonth, addMonths, subMonths, isSameMonth, isToday, isSameDay } from 'date-fns'
-  import { getMonthDays } from '../utils/dateUtils.js'
+  import { getMonthDays, formatDateI18n } from '../utils/dateUtils.js'
   import CalendarManagementModal from './CalendarManagementModal.svelte'
 
   let { onImport } = $props()
@@ -90,7 +91,7 @@
         </svg>
       </button>
       <div class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-        {format(miniCalendarDate, 'MMM yyyy')}
+        {formatDateI18n(miniCalendarDate, 'MMMM yyyy')}
       </div>
       <button
         onclick={goToNextMonth}
@@ -133,7 +134,7 @@
   <!-- Calendars -->
   <div class="p-4 border-b border-gray-200 dark:border-gray-700">
     <div class="flex items-center justify-between mb-3">
-      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">Calendars</h3>
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{$_('sidebar.calendars')}</h3>
       <button
         onclick={() => showCalendarManagement = true}
         class="p-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -164,7 +165,7 @@
 
   <!-- Categories filter -->
   <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Categories</h3>
+    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{$_('sidebar.categories')}</h3>
     <div class="space-y-2">
       {#each CATEGORIES as category}
         {@const isSelected = store.selectedCategories.includes(category.id)}
@@ -179,7 +180,7 @@
             <div class="w-5 h-5" style={`color: ${category.color}`}>
               {@html category.icon}
             </div>
-            <span class="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
+            <span class="text-sm text-gray-700 dark:text-gray-300">{$_(`categories.${category.id}`)}</span>
           </div>
         </label>
       {/each}
@@ -188,7 +189,7 @@
 
   <!-- Timezone -->
   <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Timezone</h3>
+    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{$_('sidebar.timezone')}</h3>
     <select
       bind:value={store.timezone}
       class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -240,7 +241,7 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
         </svg>
-        Keyboard Shortcuts
+        {$_('sidebar.keyboardShortcuts')}
       </span>
       <svg
         class="w-4 h-4 transition-transform {showShortcuts ? 'rotate-180' : ''}"

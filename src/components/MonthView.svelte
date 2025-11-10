@@ -1,4 +1,6 @@
 <script>
+  import { _ } from 'svelte-i18n'
+  import { get } from 'svelte/store'
   import { format, isSameMonth, isToday, isSameDay, startOfDay, endOfDay, isWithinInterval, addDays, differenceInDays, getWeek, startOfMonth, endOfMonth, isAfter, isBefore } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
@@ -14,9 +16,11 @@
   const settings = settingsStore
 
   function getWeekDayHeaders() {
-    const allDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const t = get(_)
+    const allDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     const startDay = settings.firstDayOfWeek
-    return [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+    const reorderedDays = [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+    return reorderedDays.map(day => t(`weekDays.${day}`))
   }
 
   let draggedEvent = $state(null)

@@ -14,7 +14,8 @@
   "views": {
     "month": "Mois",
     "week": "Semaine",
-    "day": "Jour"
+    "day": "Jour",
+    "weekOf": "Semaine du"
   },
   "navigation": {
     "previous": "Précédent",
@@ -25,7 +26,9 @@
     "miniCalendar": "Mini calendrier",
     "calendars": "Calendriers",
     "categories": "Catégories",
-    "allCategories": "Toutes les catégories"
+    "allCategories": "Toutes les catégories",
+    "timezone": "Fuseau horaire",
+    "keyboardShortcuts": "Raccourcis clavier"
   },
   "event": {
     "createNew": "Créer un nouvel événement",

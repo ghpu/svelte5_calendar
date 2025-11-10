@@ -3,6 +3,7 @@
   import { _ } from 'svelte-i18n'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
+  import { formatDateI18n } from '../utils/dateUtils.js'
 
   let { onNewEvent, onOpenSettings } = $props()
 
@@ -12,11 +13,11 @@
   function getHeaderText() {
     switch (store.view) {
       case 'month':
-        return format(store.currentDate, 'MMMM yyyy')
+        return formatDateI18n(store.currentDate, 'MMMM yyyy')
       case 'week':
-        return format(store.currentDate, "'Week of' MMM d, yyyy")
+        return `${$_('views.weekOf')} ${formatDateI18n(store.currentDate, 'MMM d, yyyy')}`
       case 'day':
-        return format(store.currentDate, 'EEEE, MMMM d, yyyy')
+        return formatDateI18n(store.currentDate, 'EEEE, MMMM d, yyyy')
       default:
         return ''
     }

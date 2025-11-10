@@ -3,7 +3,7 @@
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
-  import { getWeekDays, isWeekend, isWithinWorkingHours } from '../utils/dateUtils.js'
+  import { getWeekDays, isWeekend, isWithinWorkingHours, formatDateI18n } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
   import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
   import { calculateEventPositions } from '../utils/eventPositioning.js'
@@ -184,7 +184,7 @@
       {@const isTodayDate = isToday(day)}
       {@const isWeekendDay = isWeekend(day)}
       <div class="py-3 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0 {isWeekendDay && settings.highlightWeekends ? 'bg-gray-100/50 dark:bg-gray-900/50' : ''}">
-        <div class="text-xs font-medium text-gray-600 dark:text-gray-400">{format(day, 'EEE')}</div>
+        <div class="text-xs font-medium text-gray-600 dark:text-gray-400">{formatDateI18n(day, 'EEE')}</div>
         <div
           class={`text-lg font-semibold ${
             isTodayDate

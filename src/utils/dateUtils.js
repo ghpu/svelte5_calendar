@@ -14,6 +14,8 @@ import {
   differenceInDays,
   differenceInMinutes
 } from 'date-fns'
+import { get } from 'svelte/store'
+import { _ } from 'svelte-i18n'
 
 export function getMonthDays(date, weekStartsOn = 0) {
   const start = startOfWeek(startOfMonth(date), { weekStartsOn })
@@ -128,4 +130,59 @@ export function getWeekNumber(date) {
   const startOfYear = new Date(date.getFullYear(), 0, 1)
   const days = differenceInDays(date, startOfYear)
   return Math.ceil((days + startOfYear.getDay() + 1) / 7)
+}
+
+// i18n date formatting helpers
+export function getLocalizedDayName(date, abbreviated = false) {
+  const t = get(_)
+  const dayIndex = date.getDay()
+  const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+  const dayKeysShort = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+
+  return abbreviated
+    ? t(`weekDays.${dayKeysShort[dayIndex]}`)
+    : t(`weekDays.${dayKeys[dayIndex]}`)
+}
+
+export function getLocalizedMonthName(date) {
+  const t = get(_)
+  const monthIndex = date.getMonth()
+  const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june',
+                     'july', 'august', 'september', 'october', 'november', 'december']
+
+  return t(`months.${monthKeys[monthIndex]}`)
+}
+
+export function getLocalizedMonthNameShort(date) {
+  // For abbreviated months, we'll use the first 3 characters
+  const fullName = getLocalizedMonthName(date)
+  return fullName.substring(0, 3)
+}
+
+// Custom i18n date formatters
+export function formatDateI18n(date, pattern) {
+  const t = get(_)
+  const day = date.getDate()
+  const year = date.getFullYear()
+
+  switch (pattern) {
+    case 'MMMM yyyy': // "January 2024"
+      return `${getLocalizedMonthName(date)} ${year}`
+
+    case 'MMM d, yyyy': // "Jan 1, 2024"
+      return `${getLocalizedMonthNameShort(date)} ${day}, ${year}`
+
+    case 'EEEE, MMMM d, yyyy': // "Monday, January 1, 2024"
+      return `${getLocalizedDayName(date)}, ${getLocalizedMonthName(date)} ${day}, ${year}`
+
+    case 'EEE': // "Mon"
+      return getLocalizedDayName(date, true)
+
+    case 'EEEE': // "Monday"
+      return getLocalizedDayName(date)
+
+    default:
+      // Fall back to date-fns format for numeric patterns
+      return format(date, pattern)
+  }
 }
