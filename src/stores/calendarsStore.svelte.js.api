@@ -1,5 +1,7 @@
 import { calendarApi } from '../services/api.js'
+import { transformCalendarFromApi, transformCalendarToApi } from '../utils/dataTransformer.js'
 
+// Calendars store with Svelte 5 runes - API version (fully synced with latest fixes)
 class CalendarsStore {
   calendars = $state([])
   loading = $state(false)
@@ -13,16 +15,8 @@ class CalendarsStore {
     try {
       this.loading = true
       this.error = null
-      const calendars = await calendarApi.getAll()
-      this.calendars = calendars.map(cal => ({
-        id: cal.id,
-        name: cal.name,
-        color: cal.color,
-        visible: cal.visible,
-        isDefault: cal.is_default,
-        createdAt: cal.created_at,
-        updatedAt: cal.updated_at
-      }))
+      const apiCalendars = await calendarApi.getAll()
+      this.calendars = apiCalendars.map(transformCalendarFromApi)
     } catch (err) {
       this.error = err.message
       console.error('Failed to load calendars:', err)
@@ -43,20 +37,10 @@ class CalendarsStore {
         is_default: false
       }
 
-      const newCalendar = await calendarApi.create(calendarData)
-
-      const calendar = {
-        id: newCalendar.id,
-        name: newCalendar.name,
-        color: newCalendar.color,
-        visible: newCalendar.visible,
-        isDefault: newCalendar.is_default,
-        createdAt: newCalendar.created_at,
-        updatedAt: newCalendar.updated_at
-      }
-
-      this.calendars.push(calendar)
-      return calendar
+      const apiCalendar = await calendarApi.create(calendarData)
+      const newCalendar = transformCalendarFromApi(apiCalendar)
+      this.calendars.push(newCalendar)
+      return newCalendar
     } catch (err) {
       this.error = err.message
       console.error('Failed to add calendar:', err)
@@ -71,18 +55,18 @@ class CalendarsStore {
       this.loading = true
       this.error = null
 
-      const updatedCalendar = await calendarApi.update(id, updates)
+      const updateData = transformCalendarToApi(updates)
+      const apiCalendar = await calendarApi.update(id, updateData)
+      const updatedCalendar = transformCalendarFromApi(apiCalendar)
 
       const index = this.calendars.findIndex(c => c.id === id)
       if (index !== -1) {
-        this.calendars[index] = {
-          id: updatedCalendar.id,
-          name: updatedCalendar.name,
-          color: updatedCalendar.color,
-          visible: updatedCalendar.visible,
-          isDefault: updatedCalendar.is_default,
-          updatedAt: updatedCalendar.updated_at
-        }
+        // Proper Svelte 5 reactivity: reassign the array
+        this.calendars = [
+          ...this.calendars.slice(0, index),
+          { ...this.calendars[index], ...updatedCalendar },
+          ...this.calendars.slice(index + 1)
+        ]
       }
     } catch (err) {
       this.error = err.message
@@ -117,9 +101,7 @@ class CalendarsStore {
   async toggleCalendar(id) {
     const calendar = this.calendars.find(c => c.id === id)
     if (calendar) {
-      calendar.visible = !calendar.visible
-      // Update on server
-      await this.updateCalendar(id, { visible: calendar.visible })
+      await this.updateCalendar(id, { visible: !calendar.visible })
     }
   }
 
@@ -132,7 +114,13 @@ class CalendarsStore {
   }
 
   getDefaultCalendar() {
-    return this.calendars.find(c => c.isDefault) || this.calendars[0]
+    return this.calendars.find(c => c.isDefault) || this.calendars[0] || {
+      id: 'default',
+      name: 'Default',
+      color: '#3b82f6',
+      visible: true,
+      isDefault: true
+    }
   }
 }
 
