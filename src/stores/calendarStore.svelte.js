@@ -25,6 +25,7 @@ class CalendarStore {
   currentDate = $state(new Date())
   view = $state('month') // 'month', 'week', 'day'
   events = $state([])
+  eventsVersion = $state(0) // Increment this whenever events change
   selectedEvent = $state(null)
   showEventModal = $state(false)
   searchQuery = $state('')
@@ -88,6 +89,7 @@ class CalendarStore {
       updatedAt: new Date().toISOString()
     }
     this.events.push(newEvent)
+    this.eventsVersion++
     this.saveToStorage()
     return newEvent
   }
@@ -100,12 +102,14 @@ class CalendarStore {
         ...updates,
         updatedAt: new Date().toISOString()
       }
+      this.eventsVersion++
       this.saveToStorage()
     }
   }
 
   deleteEvent(id) {
     this.events = this.events.filter(e => e.id !== id)
+    this.eventsVersion++
     this.saveToStorage()
   }
 
@@ -139,6 +143,7 @@ class CalendarStore {
       updatedAt: new Date().toISOString()
     }
     this.events.push(exceptionEvent)
+    this.eventsVersion++
     this.saveToStorage()
     return exceptionEvent
   }
@@ -158,6 +163,7 @@ class CalendarStore {
       createdAt: new Date().toISOString()
     }
     this.events.push(deletionException)
+    this.eventsVersion++
     this.saveToStorage()
   }
 
@@ -170,6 +176,7 @@ class CalendarStore {
       updatedAt: new Date().toISOString()
     }
     this.events.push(duplicated)
+    this.eventsVersion++
     this.saveToStorage()
     return duplicated
   }
