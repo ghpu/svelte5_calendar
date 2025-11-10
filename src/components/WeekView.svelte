@@ -3,7 +3,7 @@
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
-  import { getWeekDays, isWeekend, isWithinWorkingHours, formatDateI18n } from '../utils/dateUtils.js'
+  import { getWeekDays, isWeekend, isWithinWorkingHours, formatDateI18n, isMultiDayEvent } from '../utils/dateUtils.js'
   import { CATEGORIES } from '../utils/constants.js'
   import { isRecurringEvent, getAllEventInstancesInRange } from '../utils/recurringEvents.js'
   import { calculateEventPositions } from '../utils/eventPositioning.js'
@@ -303,8 +303,13 @@
               {/if}
               <span class="truncate">{event.title}</span>
             </div>
+            {@const isMultiDay = isMultiDayEvent(event.startDate, event.endDate)}
             <div class="text-[10px] opacity-75">
-              {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+              {#if isMultiDay}
+                {formatDateI18n(new Date(event.startDate), 'EEE')} {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {formatDateI18n(new Date(event.endDate), 'EEE')} {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+              {:else}
+                {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+              {/if}
             </div>
           </button>
         {/each}

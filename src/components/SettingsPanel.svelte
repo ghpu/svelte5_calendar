@@ -119,7 +119,7 @@
                 class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 {#each FIRST_DAY_OPTIONS as option}
-                  <option value={option.id}>{$_(`weekDays.${option.id}`)}</option>
+                  <option value={option.id}>{$_(`weekDays.${option.key}`)}</option>
                 {/each}
               </select>
             </div>

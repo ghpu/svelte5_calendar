@@ -1,5 +1,6 @@
 <script>
   import { _ } from 'svelte-i18n'
+  import { get } from 'svelte/store'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
   import { settingsStore } from '../stores/settingsStore.svelte.js'
@@ -31,9 +32,12 @@
   }
 
   function getMiniCalendarWeekDays() {
-    const allDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+    const t = get(_)
+    const allDays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     const startDay = settings.firstDayOfWeek
-    return [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+    const reorderedDays = [...allDays.slice(startDay), ...allDays.slice(0, startDay)]
+    // Get first letter of each translated day name
+    return reorderedDays.map(day => t(`weekDays.${day}`).charAt(0).toUpperCase())
   }
 
   function handleImportClick() {

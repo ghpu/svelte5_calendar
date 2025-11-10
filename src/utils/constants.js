@@ -118,6 +118,6 @@ export const TIME_FORMATS = [
 ]
 
 export const FIRST_DAY_OPTIONS = [
-  { id: 0, name: 'Sunday' },
-  { id: 1, name: 'Monday' }
+  { id: 0, key: 'sunday' },
+  { id: 1, key: 'monday' }
 ]
