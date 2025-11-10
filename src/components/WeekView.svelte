@@ -39,6 +39,14 @@
     return calendar?.color || '#6b7280'
   }
 
+  // Get localized abbreviated day name (uses reactive $_)
+  function getLocalizedDayAbbr(date) {
+    const dayIndex = date.getDay()
+    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    const dayKeysShort = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+    return $_(`weekDays.${dayKeysShort[dayIndex]}`)
+  }
+
   function getEventPosition(event) {
     const start = new Date(event.startDate)
     const end = new Date(event.endDate)
@@ -307,7 +315,7 @@
             </div>
             <div class="text-[10px] opacity-75">
               {#if isMultiDay}
-                {formatDateI18n(new Date(event.startDate), 'EEE')} {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {formatDateI18n(new Date(event.endDate), 'EEE')} {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
+                {getLocalizedDayAbbr(new Date(event.startDate))} {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {getLocalizedDayAbbr(new Date(event.endDate))} {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
               {:else}
                 {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
               {/if}
