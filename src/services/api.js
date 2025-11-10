@@ -19,7 +19,7 @@ async function handleResponse(response) {
 // Calendar API
 export const calendarApi = {
   async getAll() {
-    const response = await fetch(`${API_BASE_URL}/api/calendars`)
+    const response = await fetch(`${API_BASE_URL}/api/calendars/`)
     return handleResponse(response)
   },
 
@@ -29,7 +29,7 @@ export const calendarApi = {
   },
 
   async create(calendar) {
-    const response = await fetch(`${API_BASE_URL}/api/calendars`, {
+    const response = await fetch(`${API_BASE_URL}/api/calendars/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(calendar)
@@ -63,7 +63,7 @@ export const eventApi = {
     if (params.skip) queryParams.append('skip', params.skip)
     if (params.limit) queryParams.append('limit', params.limit)
 
-    const url = `${API_BASE_URL}/api/events${queryParams.toString() ? '?' + queryParams.toString() : ''}`
+    const url = `${API_BASE_URL}/api/events/${queryParams.toString() ? '?' + queryParams.toString() : ''}`
     const response = await fetch(url)
     return handleResponse(response)
   },
@@ -74,7 +74,7 @@ export const eventApi = {
   },
 
   async create(event) {
-    const response = await fetch(`${API_BASE_URL}/api/events`, {
+    const response = await fetch(`${API_BASE_URL}/api/events/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(event)
