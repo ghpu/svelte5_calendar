@@ -1,4 +1,5 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { format, startOfDay, endOfDay, isSameDay } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
@@ -91,7 +92,7 @@
   <!-- All-day events row -->
   {#if getAllDayEvents().length > 0}
     <div class="border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 p-3">
-      <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">All Day</div>
+      <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">{$_('common.allDay')}</div>
       <div class="space-y-2">
         {#each getAllDayEvents() as event}
           {@const color = getEventColor(event)}

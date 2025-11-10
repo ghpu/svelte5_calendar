@@ -1,4 +1,5 @@
 <script>
+  import { _ } from 'svelte-i18n'
   import { format, isToday, startOfWeek, endOfWeek, isSameDay, startOfDay, endOfDay } from 'date-fns'
   import { calendarStore } from '../stores/calendarStore.svelte.js'
   import { calendarsStore } from '../stores/calendarsStore.svelte.js'
@@ -201,7 +202,7 @@
   <!-- All-day events row -->
   <div class="relative grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 min-h-[40px]">
     <div class="py-2 px-2 text-xs text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
-      All Day
+      {$_('common.allDay')}
     </div>
     <div class="col-span-7 relative p-1 space-y-1">
       {#each getAllDayEvents() as event}
