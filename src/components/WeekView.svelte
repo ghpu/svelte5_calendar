@@ -271,6 +271,7 @@
           {@const position = getEventPositionForDay(event, day)}
           {@const isRecurring = isRecurringEvent(event)}
           {@const categoryInfo = CATEGORIES.find(c => c.id === event.category)}
+          {@const isMultiDay = isMultiDayEvent(event.startDate, event.endDate)}
           <button
             onclick={(e) => {
               e.stopPropagation()
@@ -303,7 +304,6 @@
               {/if}
               <span class="truncate">{event.title}</span>
             </div>
-            {@const isMultiDay = isMultiDayEvent(event.startDate, event.endDate)}
             <div class="text-[10px] opacity-75">
               {#if isMultiDay}
                 {formatDateI18n(new Date(event.startDate), 'EEE')} {format(new Date(event.startDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')} - {formatDateI18n(new Date(event.endDate), 'EEE')} {format(new Date(event.endDate), settings.timeFormat === '24h' ? 'HH:mm' : 'h:mm a')}
