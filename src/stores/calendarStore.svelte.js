@@ -95,16 +95,11 @@ class CalendarStore {
   updateEvent(id, updates) {
     const index = this.events.findIndex(e => e.id === id)
     if (index !== -1) {
-      // Create new array to trigger Svelte 5 reactivity
-      this.events = [
-        ...this.events.slice(0, index),
-        {
-          ...this.events[index],
-          ...updates,
-          updatedAt: new Date().toISOString()
-        },
-        ...this.events.slice(index + 1)
-      ]
+      this.events[index] = {
+        ...this.events[index],
+        ...updates,
+        updatedAt: new Date().toISOString()
+      }
       this.saveToStorage()
     }
   }
