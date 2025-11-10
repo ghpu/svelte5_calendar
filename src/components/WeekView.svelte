@@ -117,11 +117,18 @@
   }
 
   function getTimedEvents(day) {
+    const dayStart = startOfDay(day)
+    const dayEnd = endOfDay(day)
+
     const events = cachedInstances.filter(event => {
       if (event.isAllDay) return false
 
-      const eventStart = new Date(event.startDate)
-      return isSameDay(eventStart, day)
+      const eventStart = startOfDay(new Date(event.startDate))
+      const eventEnd = startOfDay(new Date(event.endDate))
+
+      // Include event if it overlaps with this day
+      // Event overlaps if: eventStart <= dayEnd AND eventEnd >= dayStart
+      return eventStart <= dayEnd && eventEnd >= dayStart
     })
 
     // Calculate positions for overlapping events
